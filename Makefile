@@ -1,6 +1,6 @@
 .PHONY: watch
 watch:
-	go tool air -c .air.toml
+	DB_DSN=db.sqlite go tool air -c .air.toml
 
 .PHONY: build
 build: sqlc templ tailwind
@@ -21,3 +21,7 @@ sqlc:
 .PHONY: tailwind
 tailwind:
 	tailwindcss -i ./static/css/main.css -o ./static/css/dist.css --minify
+
+.PHONY: test
+test:
+	DB_DSN=":memory:" go tool gotestsum

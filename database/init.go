@@ -3,10 +3,9 @@ package database
 import (
 	"database/sql"
 	"embed"
-	"io/fs"
+	"log/slog"
 	"os"
 
-	"github.com/pressly/goose/v3"
 	_ "modernc.org/sqlite"
 )
 
@@ -20,6 +19,8 @@ var (
 func init() {
 	var err error
 
+	slog.Info("[database] init", "dsn", os.Getenv("DB_DSN"))
+
 	DB, err = sql.Open("sqlite", os.Getenv("DB_DSN"))
 	if err != nil {
 		panic(err)
@@ -29,15 +30,5 @@ func init() {
 		panic(err)
 	}
 
-	schemaFS, err := fs.Sub(FS, "schema")
-	if err != nil {
-		panic(err)
-	}
-
-	goose.SetDialect("sqlite3")
-	goose.SetBaseFS(schemaFS)
-
-	if err = goose.Up(DB, "."); err != nil {
-		panic(err)
-	}
+	Migrate()
 }
