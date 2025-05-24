@@ -24,4 +24,4 @@ tailwind:
 
 .PHONY: test
 test:
-	DB_DSN=":memory:" go tool gotestsum
+	ENV="test" DB_DSN=":memory:" go tool gotestsum

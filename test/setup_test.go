@@ -6,16 +6,22 @@ import (
 )
 
 func TestSetupRedirect(t *testing.T) {
-	tc := NewTestCase()
+	tc := NewTestCase(t)
 	defer tc.Close()
 
-	res, _ := tc.Client.Get(tc.Server.URL + "/")
+	tc.Get("/")
+	tc.AssertRedirect(http.StatusSeeOther, "/setup")
+}
 
-	if res.Request.Response.StatusCode != http.StatusSeeOther {
-		t.Fatalf("Expected status code %d, got %d", http.StatusSeeOther, res.Request.Response.StatusCode)
-	}
+func TestSetupForm(t *testing.T) {
+	tc := NewTestCase(t)
+	defer tc.Close()
 
-	if res.Request.Response.Header.Get("Location") != "/setup" {
-		t.Fatalf("Expected redirect to %s, got %s", "/setup", res.Request.Response.Header.Get("Location"))
-	}
+	tc.Get("/setup")
+
+	tc.AssertElementVisible("form[hx-post='/setup']")
+	tc.AssertElementVisible("input[name='name']")
+	tc.AssertElementVisible("input[name='email']")
+	tc.AssertElementVisible("input[name='password']")
+	tc.AssertElementVisible("button[type='submit']")
 }
