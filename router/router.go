@@ -20,9 +20,13 @@ func New() *chi.Mux {
 	r.Use(middleware.Timeout(time.Second * 30))
 	r.Use(middleware.NoCache)
 
-	r.Use(SetupMiddleware)
+	r.Group(func(r chi.Router) {
+		r.Use(SetupMiddleware)
 
-	r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+		r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+	})
+
+	r.Get("/setup", templ.Handler(html.SetupPage()).ServeHTTP)
 
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 
