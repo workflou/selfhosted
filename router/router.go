@@ -24,8 +24,16 @@ func New() *chi.Mux {
 	r.Group(func(r chi.Router) {
 		r.Use(SetupMiddleware)
 
-		r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
 		r.Post("/setup", handler.SetupForm)
+		r.Get("/login", templ.Handler(html.LoginPage()).ServeHTTP)
+		r.Post("/login", handler.LoginForm)
+	})
+
+	r.Group(func(r chi.Router) {
+		r.Use(SetupMiddleware)
+		r.Use(AuthMiddleware)
+
+		r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
 	})
 
 	r.Get("/setup", handler.SetupPage)

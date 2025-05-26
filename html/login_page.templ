@@ -1,0 +1,33 @@
+package html
+
+templ LoginPage() {
+	@BaseLayout("Login Page") {
+		<div class="min-h-screen flex items-center justify-center p-4">
+			@LoginForm()
+		</div>
+	}
+}
+
+templ LoginForm() {
+	<form
+		hx-post="/login"
+		hx-swap="outerHTML"
+		class="flex flex-col gap-4 w-full max-w-sm"
+	>
+		<div class="flex flex-col gap-1.5">
+			<h1 class="text-2xl font-semibold">Login</h1>
+			<p class="text-sm text-gray-600">Please enter your credentials to log in.</p>
+		</div>
+		<div class="flex flex-col gap-1.5">
+			<label for="email" class="text-sm">E-mail</label>
+			<input type="email" id="email" name="email" required autofocus placeholder="email@example.com"/>
+		</div>
+		<div class="flex flex-col gap-1.5">
+			<label for="password" class="text-sm">Password</label>
+			<input type="password" id="password" name="password" required/>
+		</div>
+		<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+			Submit
+		</button>
+	</form>
+}

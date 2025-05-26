@@ -8,11 +8,13 @@ import (
 	"strings"
 	"template/app"
 	"template/database"
+	"template/database/store"
 	"template/router"
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pressly/goose/v3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type TestCase struct {
@@ -70,6 +72,32 @@ func (tc *TestCase) Post(path string, body url.Values) (*http.Response, error) {
 	tc.LastDocument, _ = goquery.NewDocumentFromReader(res.Body)
 
 	return res, nil
+}
+
+func (tc *TestCase) SetupAdmin() {
+	store.New(database.DB).CreateAdmin(tc.T.Context(), store.CreateAdminParams{
+		Name:     "Admin",
+		Email:    "admin@example.com",
+		Password: "$2a$10$EIX/3Z1z5Q8b1Y4e5f6e9O0j7k5h5F5y5F5y5F5y5F5y5F5y5F5y", // password123
+	})
+	app.AdminCount = 1
+}
+
+func (tc *TestCase) CreateUser(name, email, password string) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		tc.T.Fatalf("Failed to hash password: %v", err)
+	}
+
+	err = store.New(database.DB).CreateUser(tc.T.Context(), store.CreateUserParams{
+		Name:     name,
+		Email:    strings.ToLower(email),
+		Password: string(hash),
+	})
+
+	if err != nil {
+		tc.T.Fatalf("Failed to create user: %v", err)
+	}
 }
 
 func (tc *TestCase) AssertRedirect(statusCode int, location string) {
@@ -188,4 +216,19 @@ func (tc *TestCase) AssertDatabaseHas(table string, conditions map[string]interf
 	if count == 0 {
 		tc.T.Fatalf("Expected at least one row in table '%s' matching conditions %v, but found none", table, conditions)
 	}
+}
+
+func (tc *TestCase) AssertCookieSet(name string) {
+	if tc.LastResponse == nil {
+		tc.T.Fatal("No response available to assert cookie")
+	}
+
+	cookies := tc.LastResponse.Cookies()
+	for _, cookie := range cookies {
+		if cookie.Name == name {
+			return
+		}
+	}
+
+	tc.T.Fatalf("Expected cookie '%s' to be set, but it was not found in the response", name)
 }

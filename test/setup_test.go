@@ -149,6 +149,6 @@ func TestSetup(t *testing.T) {
 		app.AdminCount = 1
 
 		tc.Get("/setup")
-		tc.AssertRedirect(http.StatusSeeOther, "/")
+		tc.AssertRedirect(http.StatusSeeOther, "/login")
 	})
 }
