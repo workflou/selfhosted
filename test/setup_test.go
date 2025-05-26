@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"template/app"
 	"template/database"
 	"template/database/store"
 	"testing"
@@ -112,5 +113,42 @@ func TestSetup(t *testing.T) {
 		tc.AssertDatabaseMissing("users", map[string]interface{}{
 			"email": "AdMiN@eXaMpLe.CoM",
 		})
+	})
+
+	t.Run("admin count is updated", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		if app.AdminCount != 0 {
+			t.Fatalf("Expected app.AdminCount to be 0, got %d", app.AdminCount)
+		}
+
+		formData := url.Values{
+			"name":     {"Admin"},
+			"email":    {"admin2@example.com"},
+			"password": {"password123"},
+		}
+
+		tc.Post("/setup", formData)
+
+		if app.AdminCount != 1 {
+			t.Fatalf("Expected app.AdminCount to be 1, got %d", app.AdminCount)
+		}
+	})
+
+	t.Run("setup form redirects to home after successful setup", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		store.New(database.DB).CreateAdmin(context.Background(), store.CreateAdminParams{
+			Name:     "Admin",
+			Email:    "admin@example.com",
+			Password: "$2a$10$EIX/3Z1z5Q8b1Y4e5f6e9O0j7k5h5F5y5F5y5F5y5F5y5F5y5F5y",
+		})
+
+		app.AdminCount = 1
+
+		tc.Get("/setup")
+		tc.AssertRedirect(http.StatusSeeOther, "/")
 	})
 }

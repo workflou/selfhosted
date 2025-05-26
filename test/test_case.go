@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"template/app"
 	"template/database"
 	"template/router"
 	"testing"
@@ -33,6 +34,8 @@ func NewTestCase(t *testing.T) *TestCase {
 
 	goose.Down(database.DB, ".")
 	database.Migrate()
+
+	app.New()
 
 	return &TestCase{
 		T:      t,
@@ -82,8 +85,8 @@ func (tc *TestCase) AssertRedirect(statusCode int, location string) {
 		tc.T.Fatalf("Expected status code %d, got %d", http.StatusSeeOther, tc.LastResponse.Request.Response.StatusCode)
 	}
 
-	if tc.LastResponse.Request.Response.Header.Get("Location") != "/setup" {
-		tc.T.Fatalf("Expected redirect to %s, got %s", "/setup", tc.LastResponse.Request.Response.Header.Get("Location"))
+	if tc.LastResponse.Request.Response.Header.Get("Location") != location {
+		tc.T.Fatalf("Expected redirect to %s, got %s", location, tc.LastResponse.Request.Response.Header.Get("Location"))
 	}
 }
 

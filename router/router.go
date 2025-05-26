@@ -28,7 +28,7 @@ func New() *chi.Mux {
 		r.Post("/setup", handler.SetupForm)
 	})
 
-	r.Get("/setup", templ.Handler(html.SetupPage()).ServeHTTP)
+	r.Get("/setup", handler.SetupPage)
 
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
 
