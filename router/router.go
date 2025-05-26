@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"template/handler"
 	"template/html"
 	"template/static"
 	"time"
@@ -24,6 +25,7 @@ func New() *chi.Mux {
 		r.Use(SetupMiddleware)
 
 		r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+		r.Post("/setup", handler.SetupForm)
 	})
 
 	r.Get("/setup", templ.Handler(html.SetupPage()).ServeHTTP)

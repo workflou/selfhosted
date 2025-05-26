@@ -6,3 +6,17 @@ body {
     font-family: 'Inter', sans-serif;
     min-width: 400px;
 }
+
+button[type=submit] {
+    @apply cursor-pointer text-sm font-semibold w-full bg-black text-white px-4 py-2.5 rounded-sm shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200;
+}
+
+input[type=text],
+input[type=email],
+input[type=password] {
+    @apply w-full block px-3 py-2 border border-neutral-300 rounded-sm shadow-sm text-sm;
+}
+
+label {
+    @apply text-sm;
+}
