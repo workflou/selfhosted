@@ -128,6 +128,10 @@ func TestLogin(t *testing.T) {
 				if cookie.Expires.Round(time.Minute).Equal(s.ExpiresAt.Round(time.Minute)) == false {
 					t.Errorf("session cookie expiration does not match session expiration. Expected: %v, got: %v", s.ExpiresAt.Round(time.Minute), cookie.Expires.Round(time.Minute))
 				}
+
+				if cookie.SameSite != http.SameSiteLaxMode {
+					t.Errorf("session cookie SameSite should be Lax, got %v", cookie.SameSite)
+				}
 			}
 		}
 

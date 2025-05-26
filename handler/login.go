@@ -55,5 +55,6 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		Value:    uuid,
 		Expires:  expiresAt,
+		SameSite: http.SameSiteLaxMode,
 	})
 }
