@@ -23,7 +23,7 @@ tailwind:
 	tailwindcss -i ./static/css/main.css -o ./static/css/dist.css --minify
 
 .PHONY: test
-test:
+test: templ sqlc tailwind
 	ENV="test" DB_DSN=":memory:" go tool gotestsum
 
 .PHONY: clean

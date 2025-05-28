@@ -5,6 +5,8 @@ import (
 	"net/mail"
 	"selfhosted/database"
 	"selfhosted/database/store"
+	"selfhosted/html"
+	"selfhosted/toast"
 	"time"
 
 	"github.com/go-chi/httprate"
@@ -18,7 +20,8 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	if r.FormValue("email") == "" || r.FormValue("password") == "" {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		html.LoginForm().Render(r.Context(), w)
 		return
 	}
 
@@ -30,19 +33,25 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 
 	_, err := mail.ParseAddress(email)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		html.LoginForm().Render(r.Context(), w)
+		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)
 		return
 	}
 
 	u, err := store.New(database.DB).GetUserByEmail(r.Context(), email)
 	if err != nil || u.ID == 0 {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		html.LoginForm().Render(r.Context(), w)
+		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(r.FormValue("password")))
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		html.LoginForm().Render(r.Context(), w)
+		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)
 		return
 	}
 

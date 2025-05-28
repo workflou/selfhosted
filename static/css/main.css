@@ -2,6 +2,10 @@
 
 @import "tailwindcss";
 
+[data-loading] {
+    display: none;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     min-width: 400px;
@@ -9,6 +13,11 @@ body {
 
 button[type=submit] {
     @apply cursor-pointer text-sm font-semibold w-full bg-black text-white px-4 py-2.5 rounded-sm shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200;
+    @apply inline-flex items-center justify-center;
+}
+
+button[type=submit]:disabled {
+    @apply bg-gray-800 text-gray-300 cursor-not-allowed;
 }
 
 input[type=text],
@@ -17,6 +26,18 @@ input[type=password] {
     @apply w-full block px-3 py-2 border border-neutral-300 rounded-sm shadow-sm text-sm;
 }
 
+input:disabled {
+    @apply bg-neutral-100 text-neutral-500 cursor-not-allowed;
+}
+
 label {
     @apply text-sm;
+}
+
+#notifications {
+    @apply fixed top-0 right-0 p-4 flex flex-col gap-2 z-[999];
+}
+
+.animate-in {
+    @apply opacity-100 translate-y-0 translate-x-0;
 }
