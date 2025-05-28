@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"template/database"
-	"template/database/store"
+	"selfhosted/database"
+	"selfhosted/database/store"
 )
 
 var AdminCount int64 = 0

@@ -25,3 +25,10 @@ tailwind:
 .PHONY: test
 test:
 	ENV="test" DB_DSN=":memory:" go tool gotestsum
+
+.PHONY: clean
+clean:
+	rm -rf ./tmp
+	rm -f ./static/css/dist.css
+	rm -rf ./database/store
+	rm -f ./html/*_templ.go

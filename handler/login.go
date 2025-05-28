@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 	"net/mail"
-	"template/database"
-	"template/database/store"
+	"selfhosted/database"
+	"selfhosted/database/store"
 	"time"
 
 	"github.com/go-chi/httprate"

@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 	"net/url"
-	"template/app"
-	"template/database"
-	"template/database/store"
+	"selfhosted/app"
+	"selfhosted/database"
+	"selfhosted/database/store"
 	"testing"
 )
 

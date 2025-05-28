@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"net/http"
-	"template/router"
+	"selfhosted/router"
 )
 
 var (

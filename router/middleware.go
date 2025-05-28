@@ -2,9 +2,9 @@ package router
 
 import (
 	"net/http"
-	"template/app"
-	"template/database"
-	"template/database/store"
+	"selfhosted/app"
+	"selfhosted/database"
+	"selfhosted/database/store"
 	"time"
 )
 

@@ -3,11 +3,11 @@ package handler
 import (
 	"net/http"
 	"net/mail"
+	"selfhosted/app"
+	"selfhosted/database"
+	"selfhosted/database/store"
+	"selfhosted/html"
 	"strings"
-	"template/app"
-	"template/database"
-	"template/database/store"
-	"template/html"
 
 	"golang.org/x/crypto/bcrypt"
 )

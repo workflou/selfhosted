@@ -2,9 +2,9 @@ package router
 
 import (
 	"net/http"
-	"template/handler"
-	"template/html"
-	"template/static"
+	"selfhosted/handler"
+	"selfhosted/html"
+	"selfhosted/static"
 	"time"
 
 	"github.com/a-h/templ"
