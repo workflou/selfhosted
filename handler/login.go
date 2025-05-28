@@ -7,9 +7,12 @@ import (
 	"template/database/store"
 	"time"
 
+	"github.com/go-chi/httprate"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var loginRateLimiter = httprate.NewRateLimiter(5, time.Minute)
 
 func LoginForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
@@ -20,6 +23,10 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := r.FormValue("email")
+
+	if loginRateLimiter.RespondOnLimit(w, r, email) {
+		return
+	}
 
 	_, err := mail.ParseAddress(email)
 	if err != nil {

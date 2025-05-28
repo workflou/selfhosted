@@ -151,4 +151,28 @@ func TestLogin(t *testing.T) {
 			t.Fatalf("expected no redirect, got %s", res.Request.Response.Request.URL)
 		}
 	})
+
+	t.Run("login is rate limited", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		tc.SetupAdmin()
+
+		for i := 0; i < 5; i++ {
+			tc.Post("/login", url.Values{
+				"email":    {"invalid@example.com"},
+				"password": {"wrongpassword"},
+			})
+			tc.AssertStatus(http.StatusBadRequest)
+		}
+
+		tc.Post("/login", url.Values{
+			"email":    {"invalid@example.com"},
+			"password": {"wrongpassword"},
+		})
+		tc.AssertStatus(http.StatusTooManyRequests)
+		tc.AssertHeader("Retry-After", "60")
+		tc.AssertHeader("X-RateLimit-Limit", "5")
+		tc.AssertHeader("X-RateLimit-Remaining", "0")
+	})
 }
