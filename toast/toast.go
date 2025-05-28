@@ -38,6 +38,7 @@ func Warning(title, body string) Toast {
 
 func (t Toast) Send(ctx context.Context, w http.ResponseWriter) error {
 	return html.Notification(html.NotificationProps{
+		Type:  t.Type,
 		Title: t.Title,
 		Body:  t.Body,
 	}).Render(ctx, w)
