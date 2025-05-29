@@ -22,18 +22,22 @@ func New() *chi.Mux {
 	r.Use(middleware.NoCache)
 
 	r.Group(func(r chi.Router) {
-		r.Use(SetupMiddleware)
+		r.Use(UserMiddleware)
 
-		r.Post("/setup", handler.SetupForm)
-		r.Get("/login", templ.Handler(html.LoginPage()).ServeHTTP)
-		r.Post("/login", handler.LoginForm)
-	})
+		r.Group(func(r chi.Router) {
+			r.Use(SetupMiddleware)
 
-	r.Group(func(r chi.Router) {
-		r.Use(SetupMiddleware)
-		r.Use(AuthMiddleware)
+			r.Post("/setup", handler.SetupForm)
+			r.Get("/login", handler.LoginPage)
+			r.Post("/login", handler.LoginForm)
+		})
 
-		r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+		r.Group(func(r chi.Router) {
+			r.Use(SetupMiddleware)
+			r.Use(AuthMiddleware)
+
+			r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+		})
 	})
 
 	r.Get("/setup", handler.SetupPage)

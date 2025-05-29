@@ -24,6 +24,7 @@ type TestCase struct {
 	T            *testing.T
 	LastResponse *http.Response
 	LastDocument *goquery.Document
+	UserCookie   *http.Cookie
 }
 
 func NewTestCase(t *testing.T) *TestCase {
@@ -51,7 +52,12 @@ func (tc *TestCase) Close() {
 }
 
 func (tc *TestCase) Get(path string) (*http.Response, error) {
-	res, err := tc.Client.Get(tc.Server.URL + path)
+	req, _ := http.NewRequest("GET", tc.Server.URL+path, nil)
+	if tc.UserCookie != nil {
+		req.AddCookie(tc.UserCookie)
+	}
+
+	res, err := tc.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +69,13 @@ func (tc *TestCase) Get(path string) (*http.Response, error) {
 }
 
 func (tc *TestCase) Post(path string, body url.Values) (*http.Response, error) {
-	res, err := tc.Client.PostForm(tc.Server.URL+path, body)
+	req, _ := http.NewRequest("POST", tc.Server.URL+path, strings.NewReader(body.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	if tc.UserCookie != nil {
+		req.AddCookie(tc.UserCookie)
+	}
+
+	res, err := tc.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +109,23 @@ func (tc *TestCase) CreateUser(name, email, password string) {
 
 	if err != nil {
 		tc.T.Fatalf("Failed to create user: %v", err)
+	}
+}
+
+func (tc *TestCase) LogIn(email, password string) {
+	res, _ := tc.Post("/login", url.Values{
+		"email":    {"user@example.com"},
+		"password": {"password123"},
+	})
+
+	if res.StatusCode != http.StatusOK {
+		tc.T.Fatalf("Expected status code %d, got %d", http.StatusOK, res.StatusCode)
+	}
+
+	for _, cookie := range res.Cookies() {
+		if cookie.Name == "session" {
+			tc.UserCookie = cookie
+		}
 	}
 }
 

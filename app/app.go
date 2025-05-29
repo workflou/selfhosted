@@ -20,3 +20,7 @@ func New() {
 		panic(error)
 	}
 }
+
+type SessionKeyType string
+
+const SessionKey SessionKeyType = "session"

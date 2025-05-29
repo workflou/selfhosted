@@ -1,6 +1,7 @@
 -- name: GetSessionByUuid :one
-SELECT * FROM sessions
-WHERE uuid = ?;
+SELECT sessions.*, sqlc.embed(users) FROM sessions
+LEFT JOIN users ON sessions.user_id = users.id
+WHERE sessions.uuid = ?;
 
 -- name: CreateSession :exec
 INSERT INTO sessions (uuid, user_id, expires_at, created_at, updated_at)

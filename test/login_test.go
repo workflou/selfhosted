@@ -101,7 +101,8 @@ func TestLogin(t *testing.T) {
 		})
 
 		tc.AssertStatus(http.StatusOK)
-		tc.AssertHeader("HX-Redirect", "/")
+		tc.AssertHeader("HX-Push-Url", "/")
+		tc.AssertHeader("HX-Trigger", `{"redirect": "/"}`)
 		tc.AssertCookieSet("session")
 
 		tc.AssertDatabaseCount("sessions", 1)
@@ -148,7 +149,7 @@ func TestLogin(t *testing.T) {
 		}
 
 		if res.Request.Response != nil {
-			t.Fatalf("expected no redirect, got %s", res.Request.Response.Request.URL)
+			t.Fatalf("expected no redirect, got %s to %s", res.Request.Response.Request.URL, res.Request.Response.Header.Get("Location"))
 		}
 	})
 
@@ -174,5 +175,18 @@ func TestLogin(t *testing.T) {
 		tc.AssertHeader("Retry-After", "60")
 		tc.AssertHeader("X-RateLimit-Limit", "5")
 		tc.AssertHeader("X-RateLimit-Remaining", "0")
+	})
+
+	t.Run("authenticated users cannot access login page", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		tc.SetupAdmin()
+		tc.CreateUser("User", "user@example.com", "password123")
+
+		tc.LogIn("user@example.com", "password123")
+
+		tc.Get("/login")
+		tc.AssertRedirect(http.StatusSeeOther, "/")
 	})
 }

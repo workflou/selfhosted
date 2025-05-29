@@ -15,7 +15,9 @@ templ BaseLayout(title string) {
 		</head>
 		<body hx-ext="loading-states">
 			{ children... }
-			<div id="notifications"></div>
+			<div id="notificationsWrapper" hx-preserve="true">
+				<div id="notifications"></div>
+			</div>
 		</body>
 	</html>
 }

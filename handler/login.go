@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 	"net/mail"
+	"selfhosted/app"
 	"selfhosted/database"
 	"selfhosted/database/store"
 	"selfhosted/html"
@@ -16,6 +18,17 @@ import (
 
 var loginRateLimiter = httprate.NewRateLimiter(5, time.Minute)
 
+func LoginPage(w http.ResponseWriter, r *http.Request) {
+	sess, ok := r.Context().Value(app.SessionKey).(store.GetSessionByUuidRow)
+	if ok && sess.ID > 0 {
+		slog.Error("User already logged in", "session_id", sess.ID, "user_id", sess.UserID)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	html.LoginPage().Render(r.Context(), w)
+}
+
 func LoginForm(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
@@ -27,7 +40,10 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 
 	email := r.FormValue("email")
 
-	if loginRateLimiter.RespondOnLimit(w, r, email) {
+	if loginRateLimiter.OnLimit(w, r, email) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		html.LoginForm().Render(r.Context(), w)
+		toast.Error("Too many requests", "You have exceeded the maximum number of login attempts. Please try again later.").Send(r.Context(), w)
 		return
 	}
 
@@ -64,8 +80,6 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 		ExpiresAt: expiresAt,
 	})
 
-	w.Header().Set("HX-Redirect", "/")
-
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session",
 		HttpOnly: true,
@@ -73,4 +87,10 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 		Expires:  expiresAt,
 		SameSite: http.SameSiteLaxMode,
 	})
+
+	// w.Header().Set("HX-Location", "/")
+	w.Header().Set("HX-Trigger", `{"redirect": "/"}`)
+	w.Header().Set("HX-Push-Url", `/`)
+	html.LoginForm().Render(r.Context(), w)
+	toast.Success("Welcome back!", "You have successfully logged in.").Send(r.Context(), w)
 }
