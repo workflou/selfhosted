@@ -87,10 +87,15 @@ func (tc *TestCase) Post(path string, body url.Values) (*http.Response, error) {
 }
 
 func (tc *TestCase) SetupAdmin() {
+	hash, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+	if err != nil {
+		tc.T.Fatalf("Failed to hash password: %v", err)
+	}
+
 	store.New(database.DB).CreateAdmin(tc.T.Context(), store.CreateAdminParams{
 		Name:     "Admin",
 		Email:    "admin@example.com",
-		Password: "$2a$10$EIX/3Z1z5Q8b1Y4e5f6e9O0j7k5h5F5y5F5y5F5y5F5y5F5y5F5y", // password123
+		Password: string(hash),
 	})
 	app.AdminCount = 1
 }
@@ -114,8 +119,8 @@ func (tc *TestCase) CreateUser(name, email, password string) {
 
 func (tc *TestCase) LogIn(email, password string) {
 	res, _ := tc.Post("/login", url.Values{
-		"email":    {"user@example.com"},
-		"password": {"password123"},
+		"email":    {email},
+		"password": {password},
 	})
 
 	if res.StatusCode != http.StatusOK {
@@ -260,4 +265,17 @@ func (tc *TestCase) AssertCookieSet(name string) {
 	}
 
 	tc.T.Fatalf("Expected cookie '%s' to be set, but it was not found in the response", name)
+}
+
+func (tc *TestCase) AssertCookieMissing(name string) {
+	if tc.LastResponse == nil {
+		tc.T.Fatal("No response available to assert cookie")
+	}
+
+	cookies := tc.LastResponse.Cookies()
+	for _, cookie := range cookies {
+		if cookie.Name == name {
+			tc.T.Fatalf("Expected cookie '%s' to be missing, but it was found in the response", name)
+		}
+	}
 }

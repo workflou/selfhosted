@@ -37,6 +37,7 @@ func New() *chi.Mux {
 			r.Use(AuthMiddleware)
 
 			r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+			r.Get("/logout", handler.Logout)
 		})
 	})
 
