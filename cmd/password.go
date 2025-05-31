@@ -15,7 +15,7 @@ func ChangeAdminPassword(email, newPassword string) error {
 		panic(err)
 	}
 
-	slog.Info("Changing admin password", "email", email, "hash", string(hash))
+	slog.Debug("Changing admin password", "email", email, "hash", string(hash))
 
 	err = store.New(database.DB).ChangeAdminPassword(context.Background(), store.ChangeAdminPasswordParams{
 		Email:    email,

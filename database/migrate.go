@@ -7,6 +7,8 @@ import (
 )
 
 func Migrate() {
+	goose.SetLogger(goose.NopLogger())
+
 	schemaFS, err := fs.Sub(FS, "schema")
 	if err != nil {
 		panic(err)

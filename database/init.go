@@ -19,7 +19,7 @@ var (
 func init() {
 	var err error
 
-	slog.Info("[database] init", "dsn", os.Getenv("DB_DSN"))
+	slog.Debug("[database] init", "dsn", os.Getenv("DB_DSN"))
 
 	DB, err = sql.Open("sqlite", os.Getenv("DB_DSN"))
 	if err != nil {

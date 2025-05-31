@@ -43,13 +43,13 @@ func UserMiddleware(next http.Handler) http.Handler {
 		}
 
 		if s.ExpiresAt.Before(time.Now()) {
-			slog.Info("Session expired", "session_id", s.ID, "user_id", s.UserID)
+			slog.Debug("Session expired", "session_id", s.ID, "user_id", s.UserID)
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		ctx := context.WithValue(r.Context(), app.SessionKey, s)
-		slog.Info("Context updated with session", "session_id", s.ID, "user_id", s.UserID)
+		slog.Debug("Context updated with session", "session_id", s.ID, "user_id", s.UserID)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
