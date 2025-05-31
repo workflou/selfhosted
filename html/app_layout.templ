@@ -4,9 +4,16 @@ templ AppLayout(title string) {
 	@BaseLayout(title) {
 		<div class="flex min-h-screen transition-all duration-300">
 			<input type="checkbox" class="peer hidden" id="sidebar-toggle"/>
+			@SidebarOverlay()
 			@Sidebar()
 			<div class="flex-1 p-4">
-				<div class="lg:hidden size-8"></div>
+				<label for="sidebar-toggle" class="lg:hidden">
+					<div class="cursor-pointer">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+						</svg>
+					</div>
+				</label>
 				{ children... }
 			</div>
 		</div>
@@ -15,11 +22,11 @@ templ AppLayout(title string) {
 
 templ Sidebar() {
 	<div class="w-72 h-screen p-4 bg-neutral-100 border-r border-neutral-200 fixed lg:sticky lg:top-0 lg:left-0 -ml-72 lg:ml-0 peer-checked:ml-0 transition-all duration-200 ease-in-out">
-		<div class="flex flex-col gap-4 h-full">
-			<div class="flex items-center gap-2">
+		<div class="flex flex-col gap-4 h-full overflow-y-auto">
+			<div class="flex items-center gap-2 shrink-0">
 				<h1 class="text-lg font-semibold px-2">A.C.M.E.</h1>
 			</div>
-			<div>
+			<div class="shrink-0">
 				<div class="relative">
 					<input type="text" placeholder="Search..." class="w-full pl-8! flex"/>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 absolute top-1/2 left-2 -translate-y-1/2 pointer-events-none text-neutral-500">
@@ -27,7 +34,7 @@ templ Sidebar() {
 					</svg>
 				</div>
 			</div>
-			<nav class="flex flex-col gap-4 flex-1">
+			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto">
 				<ul class="flex flex-col gap-0.5">
 					<li>
 						<a href="/" class="flex gap-2 text-sm items-center hover:bg-neutral-200/50 p-2 rounded transition-colors">
@@ -92,7 +99,7 @@ templ Sidebar() {
 					</li>
 				</ul>
 			</nav>
-			<div>
+			<div class="shrink-0">
 				<div class="flex gap-2 items-center cursor-pointer hover:bg-neutral-200/50 p-2 rounded transition-colors">
 					<img src="https://i.pravatar.cc/64" class="size-8 rounded-sm" alt="User Avatar"/>
 					<div class="flex flex-col flex-1">
@@ -106,13 +113,10 @@ templ Sidebar() {
 					</svg>
 				</div>
 			</div>
-			<label for="sidebar-toggle">
-				<div class="absolute top-4 -right-8 lg:hidden cursor-pointer">
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
-					</svg>
-				</div>
-			</label>
 		</div>
 	</div>
+}
+
+templ SidebarOverlay() {
+	<label for="sidebar-toggle" class="fixed inset-0 bg-neutral-100/50 hidden peer-checked:block lg:peer-checked:hidden lg:hidden cursor-pointer backdrop-blur-[5px]"></label>
 }
