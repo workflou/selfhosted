@@ -1,5 +1,7 @@
 package html
 
+import "selfhosted/app"
+
 templ AppLayout(title string) {
 	@BaseLayout(title) {
 		<div class="flex min-h-screen transition-all duration-300">
@@ -27,12 +29,7 @@ templ Sidebar() {
 				<h1 class="text-lg font-semibold px-2">A.C.M.E.</h1>
 			</div>
 			<div class="shrink-0">
-				<div class="relative">
-					<input type="text" placeholder="Search..." class="w-full pl-8! flex"/>
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 absolute top-1/2 left-2 -translate-y-1/2 pointer-events-none text-neutral-500">
-						<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
-					</svg>
-				</div>
+				@SearchBar()
 			</div>
 			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto">
 				<ul class="flex flex-col gap-0.5">
@@ -100,18 +97,7 @@ templ Sidebar() {
 				</ul>
 			</nav>
 			<div class="shrink-0">
-				<div class="flex gap-2 items-center cursor-pointer hover:bg-neutral-200/50 p-2 rounded transition-colors">
-					<img src="https://i.pravatar.cc/64" class="size-8 rounded-sm" alt="User Avatar"/>
-					<div class="flex flex-col flex-1">
-						<span class="text-sm text-neutral-800 font-semibold">John Doe</span>
-						<span class="text-xs text-neutral-500">
-							test@example.com
-						</span>
-					</div>
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
-					</svg>
-				</div>
+				@UserMenu()
 			</div>
 		</div>
 	</div>
@@ -119,4 +105,54 @@ templ Sidebar() {
 
 templ SidebarOverlay() {
 	<label for="sidebar-toggle" class="fixed inset-0 bg-neutral-100/50 hidden peer-checked:block lg:peer-checked:hidden lg:hidden cursor-pointer backdrop-blur-[5px]"></label>
+}
+
+templ SearchBar() {
+	<div class="relative">
+		<input type="text" placeholder="Search..." class="w-full pl-8! flex"/>
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 absolute top-1/2 left-2 -translate-y-1/2 pointer-events-none text-neutral-500">
+			<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"></path>
+		</svg>
+	</div>
+}
+
+templ UserMenu() {
+	{{ user := app.GetUserFromContext(ctx) }}
+	<div class="relative">
+		<input type="checkbox" class="peer hidden" id="user-menu-toggle"/>
+		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer hover:bg-neutral-200/50 p-2 rounded transition-colors">
+			<div class="flex flex-col flex-1">
+				<span class="text-sm text-neutral-800 font-semibold">
+					{ user.Name }
+				</span>
+				<span class="text-xs text-neutral-500">
+					{ user.Email }
+				</span>
+			</div>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
+			</svg>
+		</label>
+		<div class="absolute left-0 top-0 translate-y-[calc(-100%-16px)] mt-2 w-full bg-white border border-neutral-200 rounded shadow-lg hidden peer-checked:block">
+			<ul class="flex flex-col">
+				<li>
+					<a href="/settings" class="block px-2 py-2 text-sm hover:bg-neutral-100 flex items-center gap-2">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"></path>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+						</svg>
+						<span>Settings</span>
+					</a>
+				</li>
+				<li class="border-t border-neutral-200">
+					<a href="/logout" class="block px-2 py-2 text-sm hover:bg-neutral-100 flex items-center gap-2">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"></path>
+						</svg>
+						<span>Logout</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
 }

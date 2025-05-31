@@ -3,11 +3,9 @@ package router
 import (
 	"net/http"
 	"selfhosted/handler"
-	"selfhosted/html"
 	"selfhosted/static"
 	"time"
 
-	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -36,7 +34,7 @@ func New() *chi.Mux {
 			r.Use(SetupMiddleware)
 			r.Use(AuthMiddleware)
 
-			r.Get("/", templ.Handler(html.HomePage()).ServeHTTP)
+			r.Get("/", handler.HomePage)
 			r.Get("/logout", handler.Logout)
 		})
 	})

@@ -9,8 +9,8 @@ import (
 )
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	sess, ok := r.Context().Value(app.SessionKey).(store.GetSessionByUuidRow)
-	if !ok || sess.ID == 0 {
+	sess := app.GetSessionFromContext(r.Context())
+	if sess == nil {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
