@@ -4,12 +4,7 @@ templ HomePage() {
 	@BaseLayout("Home Page") {
 		<div>
 			<h1 class="text-xl">Home Page</h1>
-			<div id="message"></div>
-			<button
-				hx-get="/v1/test"
-				hx-target="#message"
-				hx-swap="innerHTML"
-			>Click me</button>
+			<a href="/logout" class="text-blue-500 hover:underline">Logout</a>
 		</div>
 	}
 }

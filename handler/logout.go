@@ -24,6 +24,5 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	})
-
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
