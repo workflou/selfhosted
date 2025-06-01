@@ -89,16 +89,16 @@ templ RegisterForm() {
 			</div>
 		</div>
 		<div class="flex flex-col gap-0.5">
-			<label for="email" class="px-1">Email</label>
+			<label for="registerEmail" class="px-1">Email</label>
 			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
+				<input hx-preserve data-loading-disable type="email" id="registerEmail" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
 				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 			</div>
 		</div>
 		<div class="flex flex-col gap-0.5">
-			<label for="password" class="px-1">Password</label>
+			<label for="registerPassword" class="px-1">Password</label>
 			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
+				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="registerPassword" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
 				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 			</div>
 		</div>
