@@ -6,6 +6,7 @@ templ AppLayout(title string) {
 	@BaseLayout(title) {
 		<div class="flex min-h-screen transition-all duration-300 bg-zinc-200/80 group/layout">
 			<input type="checkbox" class="peer hidden" id="sidebar-toggle" checked/>
+			@SidebarOverlay()
 			@Sidebar()
 			<div class="flex-1 p-3 py-2 lg:pl-3 lg:peer-checked:pl-72 transition-all duration-200 ease-in-out">
 				<div class="p-3 flex gap-2 h-12 flex items-center pl-10">
@@ -25,7 +26,9 @@ templ AppLayout(title string) {
 }
 
 templ Sidebar() {
-	<div class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-50">
+	<div
+		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-50"
+	>
 		<div class="flex flex-col gap-3 h-full overflow-y-auto">
 			<div class="shrink-0 h-12">
 				@UserMenu()
@@ -98,6 +101,13 @@ templ Sidebar() {
 			</nav>
 		</div>
 	</div>
+}
+
+templ SidebarOverlay() {
+	<label
+		for="sidebar-toggle"
+		class="fixed inset-0 bg-zinc-100/5 hidden peer-checked:block lg:peer-checked:hidden lg:hidden cursor-pointer backdrop-blur-[5px]"
+	></label>
 }
 
 templ UserMenu() {
