@@ -12,22 +12,22 @@ body {
 }
 
 button[type=submit] {
-    @apply cursor-pointer font-semibold w-full bg-black text-white px-4 py-3 rounded-xl shadow-sm hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 transition-colors duration-200;
+    @apply cursor-pointer font-semibold w-full bg-black text-white px-4 py-3 rounded-xl shadow-sm hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 transition-colors duration-200;
     @apply inline-flex items-center justify-center h-11;
 }
 
 button[type=submit]:disabled {
-    @apply bg-neutral-800 text-neutral-300 cursor-not-allowed;
+    @apply bg-zinc-800 text-zinc-300 cursor-not-allowed;
 }
 
 input[type=text],
 input[type=email],
 input[type=password] {
-    @apply w-full block px-3 py-2.5 border border-neutral-300 rounded-xl shadow-sm bg-white;
+    @apply w-full block px-3 py-2.5 border border-zinc-300 rounded-xl shadow-sm bg-white;
 }
 
 input:disabled {
-    @apply bg-neutral-100 text-neutral-500 cursor-not-allowed;
+    @apply bg-zinc-100 text-zinc-500 cursor-not-allowed;
 }
 
 label {
@@ -40,4 +40,16 @@ label {
 
 .animate-in {
     @apply opacity-100 translate-y-0 translate-x-0;
+}
+
+section {
+    @apply bg-white shadow-sm rounded-xl border border-zinc-300;
+
+    header {
+        @apply bg-zinc-100 rounded-t-xl px-5 py-5 border-b border-b-[2px] border-zinc-200 outline-solid outline-zinc-50 outline-[1px] -outline-offset-1;
+    }
+
+    main {
+        @apply p-4;
+    }
 }

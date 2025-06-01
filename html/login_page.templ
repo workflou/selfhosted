@@ -2,7 +2,7 @@ package html
 
 templ LoginPage() {
 	@BaseLayout("Login Page") {
-		<div class="min-h-screen flex items-center justify-center p-4 bg-neutral-100">
+		<div class="min-h-screen flex items-center justify-center p-4 bg-zinc-100">
 			@LoginForm()
 		</div>
 	}
@@ -17,14 +17,14 @@ templ LoginForm() {
 		<div>
 			<img src="/static/img/logo.svg" alt="Logo" class="mx-auto size-16"/>
 		</div>
-		<div class="flex flex-col gap-1 w-full max-w-sm bg-white rounded-2xl shadow-sm border border-neutral-300 p-1 bg-gradient-to-b from-white to-neutral-100">
+		<div class="flex flex-col gap-1 w-full max-w-sm bg-white rounded-2xl shadow-sm border border-zinc-300 p-1 bg-gradient-to-b from-white to-zinc-100">
 			<div class="flex items-center gap-1.5 relative">
 				<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-				@AtSymbolIcon("size-5 text-neutral-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 			</div>
 			<div class="flex items-center gap-1.5 relative">
 				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
-				@KeyIcon("size-5 text-neutral-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 			</div>
 			<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600">
 				@SubmitButtonSpinner()
