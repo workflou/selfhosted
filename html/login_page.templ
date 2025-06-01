@@ -38,13 +38,19 @@ templ LoginForm() {
 		hx-swap="outerHTML"
 		class="flex flex-col gap-2"
 	>
-		<div class="flex items-center gap-1.5 relative">
-			<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		<div class="flex flex-col gap-0.5">
+			<label for="email" class="px-1">Email</label>
+			<div class="flex items-center gap-1.5 relative">
+				<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
+				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			</div>
 		</div>
-		<div class="flex items-center gap-1.5 relative">
-			<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
-			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		<div class="flex flex-col gap-0.5">
+			<label for="password" class="px-1">Password</label>
+			<div class="flex items-center gap-1.5 relative">
+				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
+				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			</div>
 		</div>
 		<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600">
 			@SubmitButtonSpinner()
@@ -59,17 +65,26 @@ templ RegisterForm() {
 		hx-swap="outerHTML"
 		class="flex flex-col gap-2"
 	>
-		<div class="flex items-center gap-1.5 relative">
-			<input hx-preserve data-loading-disable type="text" id="name" autocomplete="name" name="name" class="pl-10! peer" required autofocus placeholder="John Doe"/>
-			@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		<div class="flex flex-col gap-0.5">
+			<label for="name" class="px-1">Name</label>
+			<div class="flex items-center gap-1.5 relative">
+				<input hx-preserve data-loading-disable type="text" id="name" autocomplete="name" name="name" class="pl-10! peer" required autofocus placeholder="John Doe"/>
+				@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			</div>
 		</div>
-		<div class="flex items-center gap-1.5 relative">
-			<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		<div class="flex flex-col gap-0.5">
+			<label for="email" class="px-1">Email</label>
+			<div class="flex items-center gap-1.5 relative">
+				<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
+				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			</div>
 		</div>
-		<div class="flex items-center gap-1.5 relative">
-			<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
-			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		<div class="flex flex-col gap-0.5">
+			<label for="password" class="px-1">Password</label>
+			<div class="flex items-center gap-1.5 relative">
+				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
+				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			</div>
 		</div>
 		<div class="flex items-start justify-start gap-3 relative cursor-pointer">
 			<label class="inline-flex items-center cursor-pointer gap-2">
