@@ -119,8 +119,16 @@ templ SearchBar() {
 templ UserMenu() {
 	{{ user := app.GetUserFromContext(ctx) }}
 	<div class="relative">
-		<input type="checkbox" class="peer hidden" id="user-menu-toggle"/>
+		<input type="checkbox" class="peer/user-menu hidden" id="user-menu-toggle"/>
+		<input type="checkbox" class="peer/settings-modal hidden" id="settings-modal-toggle"/>
 		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer hover:bg-neutral-200/50 p-2 rounded transition-colors">
+			if user.Avatar.String == "" {
+				<div class="w-10 h-10 rounded-sm bg-neutral-300 flex items-center justify-center">
+					<span class="text-neutral-700 text-sm font-semibold">{ string( user.Name[0]) }</span>
+				</div>
+			} else {
+				<img src="{ user.Avatar.String }" alt="{ user.Name }'s avatar" class="w-10 h-10 rounded-full object-cover"/>
+			}
 			<div class="flex flex-col flex-1">
 				<span class="text-sm text-neutral-800 font-semibold">
 					{ user.Name }
@@ -133,16 +141,16 @@ templ UserMenu() {
 				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
 			</svg>
 		</label>
-		<div class="absolute left-0 top-0 translate-y-[calc(-100%-16px)] mt-2 w-full bg-white border border-neutral-200 rounded shadow-lg hidden peer-checked:block">
+		<div class="absolute left-0 top-0 translate-y-[calc(-100%-16px)] mt-2 w-full bg-white border border-neutral-200 rounded shadow-lg hidden peer-checked/user-menu:block">
 			<ul class="flex flex-col">
 				<li>
-					<a href="/settings" class="block px-2 py-2 text-sm hover:bg-neutral-100 flex items-center gap-2">
+					<label for="settings-modal-toggle" class="cursor-pointer block px-2 py-2 text-sm hover:bg-neutral-100 flex items-center gap-2">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"></path>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
 						</svg>
 						<span>Settings</span>
-					</a>
+					</label>
 				</li>
 				<li class="border-t border-neutral-200">
 					<a href="/logout" class="block px-2 py-2 text-sm hover:bg-neutral-100 flex items-center gap-2">
@@ -153,6 +161,71 @@ templ UserMenu() {
 					</a>
 				</li>
 			</ul>
+		</div>
+		@SettingsModal()
+	</div>
+}
+
+templ SettingsModal() {
+	<div
+		class="fixed inset-0 bg-neutral-100/50 hidden peer-checked/settings-modal:flex items-center justify-center backdrop-blur-[5px] backdrop"
+		_="on click[target.classList.contains('backdrop')] set #settings-modal-toggle.checked to false"
+	>
+		<div class="bg-white border border-neutral-200 rounded shadow-lg w-full max-w-[calc(100vw-40px)] xl:max-w-7xl p-4 h-[500px] max-h-[calc(100vh-40px)] overflow-y-auto flex flex-col gap-4">
+			<div class="flex justify-between gap-4">
+				<h2 class="text-lg font-semibold flex-1">Settings</h2>
+				<label for="settings-modal-toggle" class="cursor-pointer">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</label>
+			</div>
+			<ul role="tablist" class="flex gap-2 bg-neutral-100 p-2 rounded mb-4 p-[4px] w-fit h-9 font-semibold items-center justify-center">
+				<label for="settings-profile-tab" class="w-full h-full flex items-center justify-center">
+					<input type="radio" name="settings-tab" class="hidden peer/settings-profile-tab" id="settings-profile-tab" checked/>
+					<li class="text-sm text-neutral-700 inline-flex items-center px-4 rounded-sm h-full cursor-pointer peer-checked/settings-profile-tab:bg-white peer-checked/settings-profile-tab:shadow-sm">
+						Profile
+					</li>
+				</label>
+				<label for="settings-billing-tab" class="w-full h-full flex items-center justify-center">
+					<input type="radio" name="settings-tab" class="hidden peer/settings-billing-tab" id="settings-billing-tab"/>
+					<li class="text-sm text-neutral-700 inline-flex items-center px-4 rounded-sm h-full cursor-pointer peer-checked/settings-billing-tab:bg-white peer-checked/settings-billing-tab:shadow-sm">
+						Billing
+					</li>
+				</label>
+				<label for="settings-invoices-tab" class="w-full h-full flex items-center justify-center">
+					<input type="radio" name="settings-tab" class="hidden peer/settings-invoices-tab" id="settings-invoices-tab"/>
+					<li class="text-sm text-neutral-700 inline-flex items-center px-4 rounded-sm h-full cursor-pointer peer-checked/settings-invoices-tab:bg-white peer-checked/settings-invoices-tab:shadow-sm">
+						Invoices
+					</li>
+				</label>
+				<label for="settings-notifications-tab" class="w-full h-full flex items-center justify-center">
+					<input type="radio" name="settings-tab" class="hidden peer/settings-notifications-tab" id="settings-notifications-tab"/>
+					<li class="text-sm text-neutral-700 inline-flex items-center px-4 rounded-sm h-full cursor-pointer peer-checked/settings-notifications-tab:bg-white peer-checked/settings-notifications-tab:shadow-sm">
+						Notifications
+					</li>
+				</label>
+			</ul>
+			<div id="settings-profile-tab-content" class="items-center justify-center w-full h-full flex-1 hidden peer-checked/settings-profile-tab:flex" hx-get="/settings/profile" hx-target="this" hx-swap="innerHTML" hx-trigger="intersect">
+				@Spinner(SpinnerProps{
+					ClassNames: "size-5! text-neutral-500!",
+				})
+			</div>
+			<div id="settings-billing-tab-content" class="items-center justify-center w-full h-full flex-1 hidden peer-checked/settings-billing-tab:flex" hx-get="/settings/billing" hx-target="this" hx-swap="innerHTML" hx-trigger="intersect">
+				@Spinner(SpinnerProps{
+					ClassNames: "size-5! text-neutral-500!",
+				})
+			</div>
+			<div id="settings-invoices-tab-content" class="items-center justify-center w-full h-full flex-1 hidden peer-checked/settings-invoices-tab:flex" hx-get="/settings/invoices" hx-target="this" hx-swap="innerHTML" hx-trigger="intersect">
+				@Spinner(SpinnerProps{
+					ClassNames: "size-5! text-neutral-500!",
+				})
+			</div>
+			<div id="settings-notifications-tab-content" class="items-center justify-center w-full h-full flex-1 hidden peer-checked/settings-notifications-tab:flex" hx-get="/settings/notifications" hx-target="this" hx-swap="innerHTML" hx-trigger="intersect">
+				@Spinner(SpinnerProps{
+					ClassNames: "size-5! text-neutral-500!",
+				})
+			</div>
 		</div>
 	</div>
 }
