@@ -85,6 +85,16 @@ templ Sidebar() {
 					</li>
 				</ul>
 			</nav>
+			<nav>
+				<ul class="flex flex-col gap-0.5">
+					<li class="group">
+						<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
+							<span>Log out</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
 		</div>
 	</div>
 }
@@ -114,18 +124,18 @@ templ UserMenu() {
 				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
 			</svg>
 		</label>
-		<div class="absolute left-0 top-0 translate-y-[60px] w-full bg-gradient-to-b from-white to-zinc-100 border border-zinc-300 rounded-xl shadow-sm hidden peer-checked/user-menu:block opacity-0 peer-checked/user-menu:opacity-100 z-999 p-1 transition-all duration-300 ease-in-out">
-			<ul class="flex flex-col">
-				<li class="">
-					<a href="/logout" class="block px-2 py-2 text-sm hover:bg-white flex items-center gap-2 rounded-xl font-medium">
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-500">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"></path>
-						</svg>
-						<span>Logout</span>
-					</a>
-				</li>
-			</ul>
-		</div>
+		// <div class="absolute left-0 top-0 translate-y-[60px] w-full bg-gradient-to-b from-white to-zinc-100 border border-zinc-300 rounded-xl shadow-sm hidden peer-checked/user-menu:block opacity-0 peer-checked/user-menu:opacity-100 z-999 p-1 transition-all duration-300 ease-in-out">
+		// 	<ul class="flex flex-col">
+		// 		<li class="">
+		// 			<a href="/logout" class="block px-2 py-2 text-sm hover:bg-white flex items-center gap-2 rounded-xl font-medium">
+		// 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-500">
+		// 					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"></path>
+		// 				</svg>
+		// 				<span>Logout</span>
+		// 			</a>
+		// 		</li>
+		// 	</ul>
+		// </div>
 	</div>
 }
 
