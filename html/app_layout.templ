@@ -2,20 +2,20 @@ package html
 
 import "selfhosted/app"
 
-templ AppLayout(title string) {
+templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 	@BaseLayout(title) {
 		<div class="flex min-h-screen transition-all duration-300 bg-zinc-200/80 group/layout">
 			<input type="checkbox" class="peer hidden" id="sidebar-toggle" checked/>
 			@SidebarOverlay()
 			@Sidebar()
 			<div class="flex-1 p-3 py-2 lg:pl-3 lg:peer-checked:pl-72 transition-all duration-200 ease-in-out">
-				<div class="p-3 flex gap-2 h-12 flex items-center pl-10">
+				<div class="p-3 flex gap-2 h-12 flex items-center pl-11">
 					<label for="sidebar-toggle" class="fixed left-6 group-has-[#sidebar-toggle:checked]/layout:left-75 transition-all duration-200 ease-in-out">
 						<div class="cursor-pointer">
 							@SidebarIcon("size-4 text-zinc-900 hover:text-black transition-colors duration-200 ease-in-out")
 						</div>
 					</label>
-					<div>Breadcrumbs</div>
+					@Breadcrumbs(breadcrumbs)
 				</div>
 				<div class="flex flex-col gap-4 text-zinc-800">
 					{ children... }
@@ -142,5 +142,41 @@ templ Separator() {
 	<div class="flex flex-col items-center justify-stretch">
 		<div class="h-[1px] bg-zinc-300/80 w-full"></div>
 		<div class="h-[1px] bg-white/60 w-full"></div>
+	</div>
+}
+
+type Breadcrumb struct {
+	Label string
+	Url   string
+}
+
+templ Breadcrumbs(breadcrumbs []Breadcrumb) {
+	<div class="flex items-center gap-4 text-sm text-zinc-500">
+		<div class="w-[1px] h-5 bg-zinc-300 block"></div>
+		<div class="flex items-center gap-2">
+			for i, breadcrumb := range breadcrumbs {
+				if i > 0 {
+					<span class="text-xs hidden lg:block">&gt;</span>
+				}
+				if breadcrumb.Url != "" {
+					<a
+						href={ templ.URL(breadcrumb.Url) }
+						class={
+							"hover:text-zinc-800 hover:underline",
+							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
+						}
+					>
+						{ breadcrumb.Label }
+					</a>
+				} else {
+					<span
+						class={
+							"text-zinc-900",
+							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
+						}
+					>{ breadcrumb.Label }</span>
+				}
+			}
+		</div>
 	</div>
 }

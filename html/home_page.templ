@@ -1,10 +1,11 @@
 package html
 
 templ HomePage() {
-	@AppLayout("Home Page") {
-		<section>
-			<header>Test</header>
-			<main>Lorem ipsum</main>
-		</section>
+	@AppLayout("Home Page", []Breadcrumb{
+		{Label: "Website", Url: "/login"},
+		{Label: "Home", Url: "/"},
+		{Label: "Current", Url: ""},
+	}) {
+		<div></div>
 	}
 }
