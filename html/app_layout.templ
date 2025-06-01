@@ -34,49 +34,49 @@ templ Sidebar() {
 			</div>
 			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto px-1">
 				<ul class="flex flex-col gap-0.5 text-zinc-900 font-medium">
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-hover:text-black")
+					<li data-active class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Home</span>
 						</a>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black")
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Projects</span>
 						</a>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black")
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Settings</span>
 						</a>
 					</li>
 				</ul>
 				<ul class="flex flex-col gap-0.5">
-					<li>
+					<li class="group">
 						<span class="text-xs text-zinc-500 px-2 font-medium">Group</span>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@AcademicCapIcon("size-5 text-zinc-400 group-hover:text-black")
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@AcademicCapIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Students</span>
 						</a>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@Battery100Icon("size-5 text-zinc-400 group-hover:text-black")
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@Battery100Icon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Batteries</span>
 						</a>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@BriefcaseIcon("size-5 text-zinc-400 group-hover:text-black")
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+							@BriefcaseIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Briefcases</span>
 						</a>
 					</li>
-					<li>
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2 opacity-60">
+					<li class="group">
+						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2 opacity-60">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-400">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
 							</svg>
