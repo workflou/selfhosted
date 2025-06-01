@@ -21,7 +21,20 @@ templ LoginPage() {
 						</label>
 					</div>
 					<div class="hidden group-has-[#login:checked]:block">
-						@LoginForm()
+						<div class="flex flex-col gap-2 items-stretch">
+							@LoginForm()
+							<div class="flex items-center w-full px-1 mx-auto relative">
+								<div class="flex-1 h-[1px] bg-zinc-300"></div>
+								<span class="px-2 text-xs text-zinc-500">OR</span>
+								<div class="flex-1 h-[1px] bg-zinc-300"></div>
+							</div>
+							<div>
+								<a href="/oauth/google" class="flex items-center justify-center gap-2 bg-white border border-zinc-300 rounded-xl px-4 py-2 hover:bg-zinc-50">
+									@GoogleIcon("size-5 text-zinc-500")
+									<span class="text-sm text-zinc-800">Sign in with Google</span>
+								</a>
+							</div>
+						</div>
 					</div>
 					<div class="hidden group-has-[#register:checked]:block">
 						@RegisterForm()
@@ -46,7 +59,10 @@ templ LoginForm() {
 			</div>
 		</div>
 		<div class="flex flex-col gap-0.5">
-			<label for="password" class="px-1">Password</label>
+			<div class="flex justify-between items-center">
+				<label for="password" class="px-1">Password</label>
+				<a href="/forgot-password" class="text-xs text-zinc-500  underline">Forgot password?</a>
+			</div>
 			<div class="flex items-center gap-1.5 relative">
 				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
 				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
