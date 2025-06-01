@@ -8,12 +8,13 @@ templ AppLayout(title string) {
 			<input type="checkbox" class="peer hidden" id="sidebar-toggle" checked/>
 			@Sidebar()
 			<div class="flex-1 p-3 py-2 lg:pl-3 lg:peer-checked:pl-72 transition-all duration-200 ease-in-out">
-				<div class="p-3 flex gap-2 h-12 flex items-center group-has-[#sidebar-toggle:checked]/layout:pl-72 lg:group-has-[#sidebar-toggle:checked]/layout:pl-0 transition-all duration-200 ease-in-out">
-					<label for="sidebar-toggle">
+				<div class="p-3 flex gap-2 h-12 flex items-center pl-10">
+					<label for="sidebar-toggle" class="fixed left-6 group-has-[#sidebar-toggle:checked]/layout:left-75 transition-all duration-200 ease-in-out">
 						<div class="cursor-pointer">
 							@SidebarIcon("size-4 text-zinc-900 hover:text-black transition-colors duration-200 ease-in-out")
 						</div>
 					</label>
+					<div>Breadcrumbs</div>
 				</div>
 				<div class="flex flex-col gap-4 text-zinc-800">
 					{ children... }
