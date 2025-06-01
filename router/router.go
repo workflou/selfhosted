@@ -3,9 +3,11 @@ package router
 import (
 	"net/http"
 	"selfhosted/handler"
+	"selfhosted/html"
 	"selfhosted/static"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -21,6 +23,7 @@ func New() *chi.Mux {
 
 	r.Group(func(r chi.Router) {
 		r.Use(UserMiddleware)
+		r.Use(SetCurrentUrlMiddleware)
 
 		r.Group(func(r chi.Router) {
 			r.Use(SetupMiddleware)
@@ -35,6 +38,7 @@ func New() *chi.Mux {
 			r.Use(AuthMiddleware)
 
 			r.Get("/", handler.HomePage)
+			r.Get("/about", templ.Handler(html.AboutPage()).ServeHTTP)
 			r.Get("/logout", handler.Logout)
 
 			r.Get("/settings/profile", func(w http.ResponseWriter, r *http.Request) {

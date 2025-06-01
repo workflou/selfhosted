@@ -38,16 +38,16 @@ templ Sidebar() {
 			</div>
 			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto px-1">
 				<ul class="flex flex-col gap-0.5 text-zinc-900 font-medium">
-					<li data-active class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+					<li data-active?={ app.IsActiveUrl(ctx, "/", true) } class="group">
+						<a hx-boost href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
 							@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
 							<span>Home</span>
 						</a>
 					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+					<li data-active?={ app.IsActiveUrl(ctx, "/about", false) } class="group">
+						<a hx-boost href="/about" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
 							@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black")
-							<span>Projects</span>
+							<span>About</span>
 						</a>
 					</li>
 					<li class="group">

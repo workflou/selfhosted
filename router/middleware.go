@@ -66,3 +66,15 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func SetCurrentUrlMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), app.CurrentUrlKey, r.URL.Path)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
