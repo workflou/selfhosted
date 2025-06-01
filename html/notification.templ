@@ -10,7 +10,7 @@ templ Notification(props NotificationProps) {
 	<div id="notifications" hx-swap-oob="beforeend" hx-target="this" class="opacity-100">
 		<div
 			_="on load add .animate-in then wait 5000ms then transition opacity to 0 then remove me"
-			class="flex gap-1 bg-white shadow-md border border-neutral-300 rounded-sm p-4 w-full max-w-sm opacity-0 transition-all duration-300 ease-in-out transform translate-y-5"
+			class="flex gap-1 bg-white shadow-md border border-neutral-300 rounded-xl p-4 w-full max-w-sm opacity-0 transition-all duration-300 ease-in-out transform translate-y-5"
 		>
 			<div class="shrink-0 p-1">
 				if props.Type == "success" {
