@@ -153,16 +153,16 @@ type Breadcrumb struct {
 templ Breadcrumbs(breadcrumbs []Breadcrumb) {
 	<div class="flex items-center gap-4 text-sm text-zinc-500">
 		<div class="w-[1px] h-5 bg-zinc-300 block"></div>
-		<div class="flex items-center gap-2">
+		<div class="flex items-center gap-2 min-w-0">
 			for i, breadcrumb := range breadcrumbs {
 				if i > 0 {
-					<span class="text-xs hidden lg:block">&gt;</span>
+					<span class="text-xs hidden lg:block flex-shrink-0">&gt;</span>
 				}
 				if breadcrumb.Url != "" {
 					<a
 						href={ templ.URL(breadcrumb.Url) }
 						class={
-							"hover:text-zinc-800 hover:underline",
+							"hover:text-zinc-800 hover:underline truncate min-w-0 max-w-[200px]",
 							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
 						}
 					>
@@ -171,7 +171,7 @@ templ Breadcrumbs(breadcrumbs []Breadcrumb) {
 				} else {
 					<span
 						class={
-							"text-zinc-900",
+							"text-zinc-900 truncate min-w-0 max-w-[200px]",
 							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
 						}
 					>{ breadcrumb.Label }</span>
