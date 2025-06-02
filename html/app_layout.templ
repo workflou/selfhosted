@@ -4,7 +4,7 @@ import "selfhosted/app"
 
 templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 	@BaseLayout(title) {
-		<div class="flex min-h-screen transition-all duration-300 bg-zinc-200/80 group/layout">
+		<div class="flex min-h-screen transition-all duration-300 bg-zinc-200/80 group/layout no-transitions" id="layout-root">
 			<input
 				type="checkbox"
 				_="
@@ -18,6 +18,8 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 						set :checkedVar to (localStorage.sidebar === true or localStorage.sidebar === 'true')
 					end
 					set my.checked to :checkedVar
+					wait 10ms
+					remove .no-transitions from #layout-root
 				on change
 					if not window.matchMedia('(max-width: 1024px)').matches
 						set localStorage.sidebar to my.checked

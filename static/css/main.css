@@ -2,6 +2,10 @@
 
 @import "tailwindcss";
 
+.no-transitions * {
+    transition: none !important;
+}
+
 [data-loading] {
     display: none;
 }
