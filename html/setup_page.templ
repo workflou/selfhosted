@@ -1,10 +1,12 @@
 package html
 
 templ SetupPage() {
-	@BaseLayout("Setup Page") {
-		<div class="min-h-screen flex items-center justify-center p-4">
-			@SetupForm()
-		</div>
+	@SimpleLayout(SimpleLayoutProps{
+		Title: "Setup Admin Account",
+		Heading: "Setup Admin Account",
+		Subheading: "Please fill in the details below to create your account.",
+	}) {
+		@SetupForm()
 	}
 }
 
@@ -14,22 +16,53 @@ templ SetupForm() {
 		hx-swap="outerHTML"
 		class="flex flex-col gap-4 w-full max-w-sm"
 	>
-		<div class="flex flex-col gap-1.5">
-			<h1 class="text-2xl font-semibold">Setup Admin Account</h1>
-			<p class="text-sm text-zinc-600">Please fill in the details below to create your account.</p>
-		</div>
-		<div class="flex flex-col gap-1.5">
-			<label for="name" class="text-sm">Name</label>
-			<input data-loading-disable type="text" id="name" name="name" required autofocus placeholder="John Doe"/>
-		</div>
-		<div class="flex flex-col gap-1.5">
-			<label for="email" class="text-sm">E-mail</label>
-			<input data-loading-disable type="email" id="email" name="email" required placeholder="email@example.com"/>
-		</div>
-		<div class="flex flex-col gap-1.5">
-			<label for="password" class="text-sm">Password</label>
-			<input data-loading-disable type="password" id="password" name="password" required/>
-		</div>
+		// <div class="flex flex-col gap-1.5">
+		// 	<h1 class="text-2xl font-semibold">Setup Admin Account</h1>
+		// 	<p class="text-sm text-zinc-600">Please fill in the details below to create your account.</p>
+		// </div>
+		@FormField(FormFieldProps{
+			Label: "Name",
+			For: "name",
+		}) {
+			@Input(InputProps{
+				Type: "text",
+				Id: "name",
+				Autocomplete: "name",
+				Name: "name",
+				Required: true,
+				Autofocus: true,
+				Placeholder: "John Doe",
+			})
+			@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
+		@FormField(FormFieldProps{
+			Label: "Email",
+			For: "email",
+		}) {
+			@Input(InputProps{
+				Type: "email",
+				Id: "email",
+				Autocomplete: "email",
+				Name: "email",
+				Required: true,
+				Placeholder: "email@example.com",
+			})
+			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
+
+		@FormField(FormFieldProps{
+			Label: "Password",
+			For: "password",
+		}) {
+			@Input(InputProps{
+				Type: "password",
+				Id: "password",
+				Name: "password",
+				Required: true,
+				Placeholder: "••••••••",
+			})
+			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
 		<button data-loading-disable type="submit" class="">
 			@SubmitButtonSpinner()
 			Submit
