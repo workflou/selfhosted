@@ -9,7 +9,9 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 				type="checkbox"
 				_="
 				on load
-					if localStorage.getItem('sidebar') === null
+					if window.matchMedia('(max-width: 1024px)').matches
+						set :checkedVar to false
+					else if localStorage.getItem('sidebar') === null
 						set localStorage.sidebar to true
 						set :checkedVar to true
 					else
@@ -17,8 +19,20 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 					end
 					set my.checked to :checkedVar
 				on change
-					set localStorage.sidebar to my.checked
-					then call console.log('Sidebar state changed:', my.checked)
+					if not window.matchMedia('(max-width: 1024px)').matches
+						set localStorage.sidebar to my.checked
+						then call console.log('Sidebar state saved:', my.checked)
+					end
+				on resize from window
+					if window.matchMedia('(max-width: 1024px)').matches
+						set my.checked to false
+					else
+						if localStorage.getItem('sidebar') === null
+							set my.checked to true
+						else
+							set my.checked to (localStorage.sidebar === true or localStorage.sidebar === 'true')
+						end
+					end
 				"
 				class="peer hidden"
 				id="sidebar-toggle"
