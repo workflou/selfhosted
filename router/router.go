@@ -19,47 +19,55 @@ func New() *chi.Mux {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Timeout(time.Second * 30))
-	r.Use(middleware.NoCache)
+	r.Use(middleware.GetHead)
 
 	r.Group(func(r chi.Router) {
-		r.Use(UserMiddleware)
-		r.Use(SetCurrentUrlMiddleware)
+		r.Use(middleware.NoCache)
 
 		r.Group(func(r chi.Router) {
-			r.Use(SetupMiddleware)
+			r.Use(UserMiddleware)
+			r.Use(SetCurrentUrlMiddleware)
 
-			r.Post("/setup", handler.SetupForm)
-			r.Get("/login", handler.LoginPage)
-			r.Post("/login", handler.LoginForm)
+			r.Group(func(r chi.Router) {
+				r.Use(SetupMiddleware)
+
+				r.Post("/setup", handler.SetupForm)
+				r.Get("/login", handler.LoginPage)
+				r.Post("/login", handler.LoginForm)
+			})
+
+			r.Group(func(r chi.Router) {
+				r.Use(SetupMiddleware)
+				r.Use(AuthMiddleware)
+
+				r.Get("/", handler.HomePage)
+				r.Get("/about", templ.Handler(html.AboutPage()).ServeHTTP)
+				r.Get("/logout", handler.Logout)
+
+				r.Get("/settings/profile", func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte("Profile Settings Page"))
+				})
+				r.Get("/settings/billing", func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte("Billing Settings Page"))
+				})
+				r.Get("/settings/notifications", func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte("Notification Settings Page"))
+				})
+				r.Get("/settings/invoices", func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte("Invoices Page"))
+				})
+
+			})
 		})
 
-		r.Group(func(r chi.Router) {
-			r.Use(SetupMiddleware)
-			r.Use(AuthMiddleware)
-
-			r.Get("/", handler.HomePage)
-			r.Get("/about", templ.Handler(html.AboutPage()).ServeHTTP)
-			r.Get("/logout", handler.Logout)
-
-			r.Get("/settings/profile", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("Profile Settings Page"))
-			})
-			r.Get("/settings/billing", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("Billing Settings Page"))
-			})
-			r.Get("/settings/notifications", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("Notification Settings Page"))
-			})
-			r.Get("/settings/invoices", func(w http.ResponseWriter, r *http.Request) {
-				w.Write([]byte("Invoices Page"))
-			})
-
-		})
+		r.Get("/setup", handler.SetupPage)
 	})
 
-	r.Get("/setup", handler.SetupPage)
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.SetHeader("Cache-Control", "public, max-age=31536000"))
 
-	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+		r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+	})
 
 	return r
 }
