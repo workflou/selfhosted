@@ -3,8 +3,8 @@ package html
 templ LoginPage() {
 	@SimpleLayout(SimpleLayoutProps{
 		Title: "Login",
-		Heading: "",
-		Subheading: "",
+		Heading: "Welcome Back",
+		Subheading: "Please log in or create an account to continue.",
 	}) {
 		<div class="flex items-stretch gap-1.5 relative bg-zinc-200/80 rounded-xl p-1 h-10 group">
 			<input type="radio" name="type" id="login" value="login" class="peer/login hidden" checked/>
@@ -17,7 +17,7 @@ templ LoginPage() {
 			</label>
 		</div>
 		<div class="hidden group-has-[#login:checked]:block">
-			<div class="flex flex-col gap-2 items-stretch">
+			<div class="flex flex-col gap-3 items-stretch">
 				@LoginForm()
 				<div class="flex items-center w-full px-1 mx-auto relative">
 					<div class="flex-1 h-[1px] bg-zinc-300"></div>
@@ -42,32 +42,37 @@ templ LoginForm() {
 	<form
 		hx-post="/login"
 		hx-swap="outerHTML"
-		class="flex flex-col gap-2"
+		class="flex flex-col gap-3"
 	>
 		@FormField(FormFieldProps{
 			Label: "Email",
 			For: "email",
 		}) {
-			<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+			@Input(InputProps{
+				Type: "email",
+				Id: "email",
+				Autocomplete: "email",
+				Name: "email",
+				Required: true,
+				Autofocus: true,
+				Placeholder: "email@example.com",
+			})
+			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 		}
-		<div class="flex flex-col gap-0.5">
-			<label for="email" class="px-1">Email</label>
-			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="email" id="email" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
-			</div>
-		</div>
-		<div class="flex flex-col gap-0.5">
-			<div class="flex justify-between items-center">
-				<label for="password" class="px-1">Password</label>
-				<a href="/forgot-password" class="text-xs text-zinc-500  underline">Forgot password?</a>
-			</div>
-			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="password" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
-				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
-			</div>
-		</div>
+		@FormField(FormFieldProps{
+			Label: "Password",
+			For: "password",
+		}) {
+			@Input(InputProps{
+				Type: "password",
+				Id: "password",
+				Autocomplete: "current-password",
+				Name: "password",
+				Required: true,
+				Placeholder: "••••••••••••••",
+			})
+			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
 		<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600">
 			@SubmitButtonSpinner()
 			<span data-loading-class="hidden">Submit</span>
@@ -79,29 +84,50 @@ templ RegisterForm() {
 	<form
 		hx-post="/register"
 		hx-swap="outerHTML"
-		class="flex flex-col gap-2"
+		class="flex flex-col gap-3"
 	>
-		<div class="flex flex-col gap-0.5">
-			<label for="name" class="px-1">Name</label>
-			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="text" id="name" autocomplete="name" name="name" class="pl-10! peer" required autofocus placeholder="John Doe"/>
-				@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
-			</div>
-		</div>
-		<div class="flex flex-col gap-0.5">
-			<label for="registerEmail" class="px-1">Email</label>
-			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="email" id="registerEmail" autocomplete="email" name="email" class="pl-10! peer" required autofocus placeholder="email@example.com"/>
-				@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
-			</div>
-		</div>
-		<div class="flex flex-col gap-0.5">
-			<label for="registerPassword" class="px-1">Password</label>
-			<div class="flex items-center gap-1.5 relative">
-				<input hx-preserve data-loading-disable type="password" autocomplete="current-password" id="registerPassword" class="pl-10! peer" name="password" required placeholder="••••••••••••••"/>
-				@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
-			</div>
-		</div>
+		@FormField(FormFieldProps{
+			Label: "Name",
+			For: "name",
+		}) {
+			@Input(InputProps{
+				Type: "text",
+				Id: "name",
+				Autocomplete: "name",
+				Name: "name",
+				Required: true,
+				Autofocus: true,
+				Placeholder: "John Doe",
+			})
+			@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
+		@FormField(FormFieldProps{
+			Label: "Email",
+			For: "registerEmail",
+		}) {
+			@Input(InputProps{
+				Type: "email",
+				Id: "registerEmail",
+				Autocomplete: "email",
+				Name: "email",
+				Required: true,
+				Placeholder: "email@example.com",
+			})
+			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
+		@FormField(FormFieldProps{
+			Label: "Password",
+			For: "registerPassword",
+		}) {
+			@Input(InputProps{
+				Type: "password",
+				Id: "registerPassword",
+				Name: "password",
+				Required: true,
+				Placeholder: "••••••••••••••",
+			})
+			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
+		}
 		<div class="flex items-start justify-start gap-3 relative cursor-pointer">
 			<label class="inline-flex items-center cursor-pointer gap-2">
 				<input type="checkbox" value="" class="sr-only peer" type="checkbox" id="terms" name="terms" required/>
