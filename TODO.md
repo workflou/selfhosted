@@ -8,3 +8,5 @@
 [ ] Team Switcher
 [ ] Team Members
 [ ] Billing
+[ ] SEO Admin Settings (load on app start)
+[ ] Landing Page (move "/" to "/home" or "/dashboard")

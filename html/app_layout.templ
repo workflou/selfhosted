@@ -1,6 +1,7 @@
 package html
 
 import "selfhosted/app"
+import "fmt"
 
 templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 	@BaseLayout(title) {
@@ -59,6 +60,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 }
 
 templ Sidebar() {
+	{{ user := app.GetUserFromContext(ctx) }}
 	<div
 		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-50"
 	>
@@ -71,67 +73,58 @@ templ Sidebar() {
 			</div>
 			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto px-1">
 				<ul class="flex flex-col gap-0.5 text-zinc-900 font-medium">
-					<li data-active?={ app.IsActiveUrl(ctx, "/", true) } class="group">
-						<a hx-boost href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">Dashboard</span>
-						</a>
-					</li>
-					<li data-active?={ app.IsActiveUrl(ctx, "/about", false) } class="group">
-						<a hx-boost href="/about" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">About Page</span>
-						</a>
-					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+					@NavLink(NavlinkProps{Url: "/", Strict: true}) {
+						@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">Dashboard</span>
+					}
+					@NavLink(NavlinkProps{Url: "/about"}) {
+						@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">About Page</span>
+					}
+					@NavLink(NavlinkProps{Url: "/settings"}) {
+						@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">System Configuration and Advanced Settings</span>
+					}
+				</ul>
+				<ul class="flex flex-col gap-0.5">
+					@NavLinkGroup("Resource Management")
+					@NavLink(NavlinkProps{Url: "/students"}) {
+						@AcademicCapIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">Student Management</span>
+					}
+					@NavLink(NavlinkProps{Url: "/energy"}) {
+						@Battery100Icon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">Energy Consumption Analytics & More</span>
+					}
+					@NavLink(NavlinkProps{Url: "/projects"}) {
+						@BriefcaseIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						<span class="truncate">Project Management</span>
+					}
+					@NavLink(NavlinkProps{Url: "/more", Strict: true}) {
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
+						</svg>
+						<span class="truncate">More</span>
+					}
+				</ul>
+			</nav>
+			if user != nil {
+				<nav>
+					<ul class="flex flex-col gap-0.5">
+						@NavLinkGroup(fmt.Sprintf("%s", user.Name))
+						@NavLink(NavlinkProps{Url: "/settings"}) {
 							@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">System Configuration and Advanced Settings</span>
-						</a>
-					</li>
-				</ul>
-				<ul class="flex flex-col gap-0.5">
-					<li class="group">
-						<span class="text-xs text-zinc-500 px-2 font-medium truncate">Resource Management</span>
-					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@AcademicCapIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">Student Management and Educational Resources</span>
-						</a>
-					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@Battery100Icon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">Power Management and Energy Consumption Analytics</span>
-						</a>
-					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group_data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@BriefcaseIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">Project Management and Business Operations Center</span>
-						</a>
-					</li>
-					<li class="group">
-						<a href="/" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2 opacity-60">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-400 shrink-0">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
-							</svg>
-							<span class="truncate">More</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-			<nav>
-				<ul class="flex flex-col gap-0.5">
-					<li class="group">
-						<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-							@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-							<span class="truncate">Sign Out</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
+							<span class="truncate">Settings</span>
+						}
+						<li class="group">
+							<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+								@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+								<span class="truncate">Sign Out</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			}
 		</div>
 	</div>
 }
@@ -212,4 +205,25 @@ templ Breadcrumbs(breadcrumbs []Breadcrumb) {
 			}
 		</div>
 	</div>
+}
+
+type NavlinkProps struct {
+	Url    string
+	Strict bool
+}
+
+templ NavLink(props NavlinkProps) {
+	<li data-active?={ app.IsActiveUrl(ctx, props.Url, props.Strict) } class="group">
+		<a hx-boost href={ templ.URL(props.Url) } class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+			{ children... }
+		</a>
+	</li>
+}
+
+templ NavLinkGroup(label string) {
+	<li class="group">
+		<span class="text-xs text-zinc-500 px-2 font-medium truncate">
+			{ label }
+		</span>
+	</li>
 }
