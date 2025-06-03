@@ -31,7 +31,7 @@ input[type=password] {
 }
 
 input[type=checkbox] {
-    @apply size-5 text-zinc-600 bg-zinc-100 border-zinc-300 rounded-xl focus:ring-zinc-500 dark:focus:ring-zinc-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600;
+    @apply size-5 text-zinc-600 bg-zinc-100 border-zinc-300 rounded-xl focus:ring-zinc-500 focus:ring-2;
 }
 
 input:disabled {

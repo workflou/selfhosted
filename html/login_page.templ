@@ -30,6 +30,9 @@ templ LoginPage() {
 						<span class="text-sm text-zinc-800">Sign in with Google</span>
 					</a>
 				</div>
+				<div class="px-1">
+					<a href="/password-reset" class="text-sm text-zinc-500 underline">Forgot password?</a>
+				</div>
 			</div>
 		</div>
 		<div class="hidden group-has-[#register:checked]:block">
@@ -131,7 +134,7 @@ templ RegisterForm() {
 		<div class="flex items-start justify-start gap-3 relative cursor-pointer">
 			<label class="inline-flex items-center cursor-pointer gap-2">
 				<input type="checkbox" value="" class="sr-only peer" type="checkbox" id="terms" name="terms" required/>
-				<div class="relative w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zinc-300 dark:peer-focus:ring-zinc-800 rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-zinc-900 dark:peer-checked:bg-zinc-900"></div>
+				<div class="relative w-11 h-6 bg-zinc-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-zinc-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-zinc-900"></div>
 				<span class="text-xs text-zinc-600">
 					I agree to the <a target="_blank" href="/terms" class="text-black font-medium hover:underline">Terms&nbsp;of&nbsp;Service</a> and <a target="_blank" href="/privacy" class="text-black font-medium hover:underline">Privacy&nbsp;Policy</a>.
 				</span>
