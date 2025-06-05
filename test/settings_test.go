@@ -2,6 +2,7 @@ package test
 
 import (
 	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -29,5 +30,26 @@ func TestSettings(t *testing.T) {
 		tc.AssertElementVisible("input[name='name']")
 		tc.AssertElementVisible("input[name='avatar']")
 		tc.AssertElementVisible("button[type='submit']")
+	})
+
+	t.Run("name can be updated", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		tc.SetupAdmin()
+		tc.LogIn("admin@example.com", "password123")
+
+		formData := url.Values{
+			"name": {"New Admin Name"},
+		}
+
+		tc.Post("/settings", formData)
+		tc.AssertStatus(http.StatusOK)
+		tc.AssertHeader("HX-Reswap", "none")
+
+		tc.AssertDatabaseCount("users", 1)
+		tc.AssertDatabaseHas("users", map[string]any{
+			"name": "New Admin Name",
+		})
 	})
 }
