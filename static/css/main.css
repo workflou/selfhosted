@@ -27,7 +27,7 @@ button[type=submit]:disabled {
 input[type=text],
 input[type=email],
 input[type=password] {
-    @apply w-full block px-3 py-2 text-sm border border-zinc-300 rounded-xl shadow-sm bg-white;
+    @apply w-full block px-3 py-2 text-sm border border-zinc-300 rounded-xl shadow-xs bg-white;
 }
 
 input[type=checkbox] {
