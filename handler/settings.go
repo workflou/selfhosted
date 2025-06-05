@@ -33,47 +33,21 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, fileHeader, err := r.FormFile("avatar")
+	path, err := uploadFile(r, "avatar", "./uploads/avatars")
+	if err != nil && err != http.ErrMissingFile {
+		slog.Error("File upload error", "error", err)
+		w.Header().Set("HX-Reswap", "none")
+		w.WriteHeader(http.StatusInternalServerError)
+		toast.Error("Upload failed", err.Error()).Send(r.Context(), w)
+		return
+	}
+
 	if err == nil {
-		defer file.Close()
-		filename := fileHeader.Filename
-
-		uploads := "./uploads/avatars"
-		err = os.MkdirAll(uploads, os.ModePerm)
-		if err != nil {
-			slog.Error("Failed to create upload directory", "error", err)
-			w.Header().Set("HX-Reswap", "none")
-			w.WriteHeader(http.StatusInternalServerError)
-			toast.Error("Upload failed", "An error occurred while creating the upload directory.").Send(r.Context(), w)
-			return
-		}
-
-		uuid := uuid.New().String()
-		path := filepath.Join(uploads, fmt.Sprintf("%s%s", uuid, filepath.Ext(filename)))
-
-		dst, err := os.Create(path)
-		if err != nil {
-			slog.Error("Failed to create upload file", "error", err)
-			w.Header().Set("HX-Reswap", "none")
-			w.WriteHeader(http.StatusInternalServerError)
-			toast.Error("Upload failed", "An error occurred while saving the uploaded file.").Send(r.Context(), w)
-			return
-		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, file); err != nil {
-			slog.Error("Failed to copy uploaded file", "error", err)
-			w.Header().Set("HX-Reswap", "none")
-			w.WriteHeader(http.StatusInternalServerError)
-			toast.Error("Upload failed", "An error occurred while copying the uploaded file.").Send(r.Context(), w)
-			return
-		}
-
-		slog.Info("User avatar updated", "user_id", user.ID, "avatar_path", dst.Name())
+		slog.Info("User avatar updated", "user_id", user.ID, "avatar_path", path)
 		err = store.New(database.DB).UpdateUserAvatar(r.Context(), store.UpdateUserAvatarParams{
 			ID: user.ID,
 			Avatar: sql.NullString{
-				String: "/" + dst.Name(),
+				String: "/" + path,
 				Valid:  true,
 			},
 		})
@@ -85,7 +59,7 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		user.Avatar = sql.NullString{
-			String: "/" + dst.Name(),
+			String: "/" + path,
 			Valid:  true,
 		}
 	}
@@ -108,4 +82,32 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 	toast.Success("Profile updated", "Your profile has been successfully updated.").Send(r.Context(), w)
 	html.UserName(user.Name).Render(r.Context(), w)
 	html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
+}
+
+func uploadFile(r *http.Request, fieldName string, uploadsPath string) (string, error) {
+	file, fileHeader, err := r.FormFile(fieldName)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	err = os.MkdirAll(uploadsPath, os.ModePerm)
+	if err != nil {
+		return "", fmt.Errorf("failed to create upload directory: %w", err)
+	}
+
+	filename := uuid.New().String() + filepath.Ext(fileHeader.Filename)
+	path := filepath.Join(uploadsPath, filename)
+
+	dst, err := os.Create(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to create upload file: %w", err)
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, file); err != nil {
+		return "", fmt.Errorf("failed to copy uploaded file: %w", err)
+	}
+
+	return path, nil
 }
