@@ -1,9 +1,13 @@
 package test
 
 import (
+	"bytes"
 	"context"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"selfhosted/database"
 	"selfhosted/database/store"
 	"testing"
@@ -63,12 +67,31 @@ func TestSettings(t *testing.T) {
 		tc.SetupAdmin()
 		tc.LogIn("admin@example.com", "password123")
 
-		formData := url.Values{
-			"name":   {"Admin with Avatar"},
-			"avatar": {"testdata/avatar.jpeg"},
+		f, err := os.Open("./../testdata/avatar.jpeg")
+		if err != nil {
+			t.Fatalf("failed to open avatar file: %v", err)
+		}
+		defer f.Close()
+
+		body := new(bytes.Buffer)
+		writer := multipart.NewWriter(body)
+
+		name, err := writer.CreateFormField("name")
+		if err != nil {
+			t.Fatalf("failed to create form field: %v", err)
+		}
+		_, err = name.Write([]byte("Admin"))
+
+		avatar, err := writer.CreateFormFile("avatar", "avatar.jpeg")
+		if err != nil {
+			t.Fatalf("failed to create form file: %v", err)
+		}
+		_, err = io.Copy(avatar, f)
+		if err != nil {
+			t.Fatalf("failed to copy avatar file: %v", err)
 		}
 
-		tc.PostMultipart("/settings", formData)
+		tc.PostMultipart("/settings", body, writer)
 
 		tc.AssertStatus(http.StatusOK)
 		tc.AssertHeader("HX-Reswap", "none")

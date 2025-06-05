@@ -90,24 +90,19 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if r.FormValue("name") == "" {
-		w.Header().Set("HX-Reswap", "none")
-		w.WriteHeader(http.StatusBadRequest)
-		toast.Error("Invalid input", "Please provide a valid name.").Send(r.Context(), w)
-		return
+	if r.FormValue("name") != "" {
+		err = store.New(database.DB).UpdateUserName(r.Context(), store.UpdateUserNameParams{
+			ID:   user.ID,
+			Name: r.FormValue("name"),
+		})
+		if err != nil {
+			w.Header().Set("HX-Reswap", "none")
+			w.WriteHeader(http.StatusInternalServerError)
+			toast.Error("Update failed", "An error occurred while updating your profile. Please try again later.").Send(r.Context(), w)
+			return
+		}
+		user.Name = r.FormValue("name")
 	}
-
-	err = store.New(database.DB).UpdateUserName(r.Context(), store.UpdateUserNameParams{
-		ID:   user.ID,
-		Name: r.FormValue("name"),
-	})
-	if err != nil {
-		w.Header().Set("HX-Reswap", "none")
-		w.WriteHeader(http.StatusInternalServerError)
-		toast.Error("Update failed", "An error occurred while updating your profile. Please try again later.").Send(r.Context(), w)
-		return
-	}
-	user.Name = r.FormValue("name")
 
 	w.Header().Set("HX-Reswap", "none")
 	toast.Success("Profile updated", "Your profile has been successfully updated.").Send(r.Context(), w)

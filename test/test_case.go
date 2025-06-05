@@ -1,6 +1,8 @@
 package test
 
 import (
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -86,9 +88,9 @@ func (tc *TestCase) Post(path string, body url.Values) (*http.Response, error) {
 	return res, nil
 }
 
-func (tc *TestCase) PostMultipart(path string, body url.Values) (*http.Response, error) {
-	req, _ := http.NewRequest("POST", tc.Server.URL+path, strings.NewReader(body.Encode()))
-	req.Header.Set("Content-Type", "multipart/form-data")
+func (tc *TestCase) PostMultipart(path string, reader io.Reader, writer *multipart.Writer) (*http.Response, error) {
+	req, _ := http.NewRequest("POST", tc.Server.URL+path, reader)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	if tc.UserCookie != nil {
 		req.AddCookie(tc.UserCookie)
 	}
@@ -176,7 +178,8 @@ func (tc *TestCase) AssertStatus(expectedStatus int) {
 	}
 
 	if tc.LastResponse.StatusCode != expectedStatus {
-		tc.T.Fatalf("Expected status code %d, got %d", expectedStatus, tc.LastResponse.StatusCode)
+		body, _ := io.ReadAll(tc.LastResponse.Body)
+		tc.T.Fatalf("Expected status code %d, got %d. Response body: %s", expectedStatus, tc.LastResponse.StatusCode, body)
 	}
 }
 
