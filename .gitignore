@@ -3,3 +3,4 @@ database/store/
 *.sqlite
 *_templ.go
 static/css/dist.css
+uploads/

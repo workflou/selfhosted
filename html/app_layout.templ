@@ -43,7 +43,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 			@Sidebar()
 			<div class="flex-1 p-3 py-2 lg:pl-3 lg:peer-checked:pl-72 transition-all duration-200 ease-in-out">
 				<div class="p-3 flex gap-2 h-12 flex items-center pl-11">
-					<label for="sidebar-toggle" class="fixed left-6 group-has-[#sidebar-toggle:checked]/layout:left-75 transition-all duration-200 ease-in-out">
+					<label for="sidebar-toggle" class="fixed left-6 group-has-[#sidebar-toggle:checked]/layout:left-75 transition-all duration-200 ease-in-out z-[999]">
 						<div class="cursor-pointer">
 							@SidebarIcon("size-4 text-zinc-900 hover:text-black transition-colors duration-200 ease-in-out")
 						</div>
@@ -61,7 +61,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 templ Sidebar() {
 	{{ user := app.GetUserFromContext(ctx) }}
 	<div
-		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-50"
+		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-[999]"
 	>
 		<div class="flex flex-col gap-3 h-full overflow-y-auto">
 			<div class="shrink-0 px-2 py-2">
@@ -116,7 +116,7 @@ templ Sidebar() {
 templ SidebarOverlay() {
 	<label
 		for="sidebar-toggle"
-		class="fixed inset-0 bg-zinc-100/5 hidden peer-checked:block lg:peer-checked:hidden lg:hidden cursor-pointer backdrop-blur-[5px]"
+		class="fixed inset-0 bg-zinc-100/5 hidden peer-checked:block lg:peer-checked:hidden lg:hidden cursor-pointer backdrop-blur-[5px] z-[998]"
 	></label>
 }
 
@@ -126,13 +126,7 @@ templ UserMenu() {
 		<input type="checkbox" class="peer/user-menu hidden" id="user-menu-toggle"/>
 		<input type="checkbox" class="peer/settings-modal hidden" id="settings-modal-toggle"/>
 		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer rounded-xl outline-white border border-transparent p-1">
-			if user.Avatar.String == "" {
-				<div class="size-8 rounded-full bg-zinc-600 flex items-center justify-center shrink-0">
-					<span class="text-white text-sm font-semibold">{ string( user.Name[0]) }</span>
-				</div>
-			} else {
-				<img src="{ user.Avatar.String }" alt="{ user.Name }'s avatar" class="size-8 rounded-full object-cover shrink-0"/>
-			}
+			@UserAvatar(user.Avatar.String, user.Name)
 			<div class="flex flex-col flex-1 min-w-0">
 				@UserName(user.Name)
 				<span class="text-xs text-zinc-500 truncate">
@@ -150,6 +144,18 @@ templ UserName(name string) {
 	<span class="text-sm text-zinc-800 font-semibold truncate" id="user-name" hx-swap-oob="true">
 		{ name }
 	</span>
+}
+
+templ UserAvatar(avatar, name string) {
+	<div id="user-avatar" hx-swap-oob="true">
+		if avatar == "" {
+			<div class="size-8 rounded-full bg-zinc-600 flex items-center justify-center shrink-0">
+				<span class="text-white text-sm font-semibold">{ string( name[0]) }</span>
+			</div>
+		} else {
+			<img src={ avatar } alt="{ user.Name }'s avatar" class="size-8 rounded-full object-cover shrink-0"/>
+		}
+	</div>
 }
 
 templ Separator() {

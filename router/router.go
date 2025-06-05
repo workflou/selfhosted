@@ -55,6 +55,7 @@ func New() *chi.Mux {
 		r.Use(middleware.SetHeader("Cache-Control", "public, max-age=31536000"))
 
 		r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(static.FS))))
+		r.Handle("/uploads/avatars/*", http.StripPrefix("/uploads/avatars/", http.FileServer(http.Dir("./uploads/avatars"))))
 	})
 
 	return r
