@@ -11,4 +11,5 @@
 [ ] SEO Admin Settings (load on app start)
 [ ] Landing Page (move "/" to "/home" or "/dashboard")
 [ ] Graceful shutdown
-[ ] Assets versioning hash
+[x] Assets versioning hash
+[ ] Feature flags - e.g. disable billing for internal apps
