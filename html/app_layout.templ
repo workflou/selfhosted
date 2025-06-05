@@ -50,7 +50,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 					</label>
 					@Breadcrumbs(breadcrumbs)
 				</div>
-				<div class="flex flex-col gap-4 text-zinc-800">
+				<div class="flex flex-col gap-4 text-zinc-800 px-2 py-1">
 					{ children... }
 				</div>
 			</div>
@@ -70,7 +70,7 @@ templ Sidebar() {
 			<div class="shrink-0">
 				@Separator()
 			</div>
-			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto px-1">
+			<nav class="flex flex-col gap-4 flex-1 overflow-y-auto px-1 min-h-[200px]">
 				<ul class="flex flex-col gap-0.5 text-zinc-900 font-medium">
 					@NavLink(NavlinkProps{Url: "/", Strict: true}) {
 						@HomeIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
@@ -200,7 +200,14 @@ type NavlinkProps struct {
 
 templ NavLink(props NavlinkProps) {
 	<li data-active?={ app.IsActiveUrl(ctx, props.Url, props.Strict) } class="group">
-		<a hx-boost href={ templ.URL(props.Url) } class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+		<a
+			hx-boost
+			if props.External {
+				target="_blank"
+			}
+			href={ templ.URL(props.Url) }
+			class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2"
+		>
 			<span class="flex-1 min-w-0 truncate flex items-center gap-2">
 				{ children... }
 			</span>

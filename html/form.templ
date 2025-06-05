@@ -1,39 +1,50 @@
 package html
 
 type FormFieldProps struct {
-    For string
-    Label string
+	For   string
+	Label string
 }
 
 templ FormField(props FormFieldProps) {
-    <div class="flex flex-col gap-0.5">
-        <label for={props.For} class="px-1">{props.Label}</label>
-        <div class="flex items-center gap-1.5 relative">
-            {children...}
-        </div>
-    </div>
+	<div class="flex flex-col gap-0.5">
+		<label for={ props.For } class="px-1">{ props.Label }</label>
+		<div class="flex items-center gap-1.5 relative">
+			{ children... }
+		</div>
+	</div>
 }
 
 type InputProps struct {
-    Type string
-    Id string
-    Autocomplete string
-    Name string
-    Required bool
-    Autofocus bool
-    Placeholder string
+	Type         string
+	Id           string
+	Autocomplete string
+	Name         string
+	Required     bool
+	Autofocus    bool
+	Placeholder  string
+	Value        string
+	HasIcon      bool
+	Contained    bool
+	ClassName    string
 }
 
 templ Input(props InputProps) {
-    <input 
-        hx-preserve 
-        data-loading-disable 
-        type={props.Type} 
-        id={props.Id} autocomplete={props.Autocomplete} 
-        name={props.Name}
-        class="pl-10! peer" 
-        required?={props.Required} 
-        autofocus?={props.Autofocus}
-        placeholder={props.Placeholder}
-    />
+	<input
+		hx-preserve
+		data-loading-disable
+		type={ props.Type }
+		id={ props.Id }
+		autocomplete={ props.Autocomplete }
+		name={ props.Name }
+		class={
+			"peer",
+			templ.KV("pl-10!", props.HasIcon),
+			templ.KV("max-w-sm", props.Contained),
+			props.ClassName,
+		}
+		required?={ props.Required }
+		value={ props.Value }
+		autofocus?={ props.Autofocus }
+		placeholder={ props.Placeholder }
+	/>
 }

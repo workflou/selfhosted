@@ -1,7 +1,71 @@
 package html
 
+import "selfhosted/app"
+
 templ SettingsPage() {
-	@AppLayout("Settings", []Breadcrumb{}) {
-		<div>Settings Page</div>
+	@AppLayout("Settings", []Breadcrumb{
+		Breadcrumb{
+			Label: "Settings",
+			Url:   "",
+		},
+	}) {
+		@Section(SectionProps{
+			Title: "Settings",
+		}) {
+			@SettingsForm()
+		}
 	}
+}
+
+templ SettingsForm() {
+	{{ user := app.GetUserFromContext(ctx) }}
+	<form hx-post="/settings" hx-swap="outerHTML" class="flex flex-col gap-4">
+		@SectionGroup(SectionGroupProps{
+			Title:       "Your Name",
+			Description: "Other users will see this name.",
+		}) {
+			@FormField(FormFieldProps{
+				Label: "",
+				For:   "name",
+			}) {
+				@Input(InputProps{
+					Type:      "text",
+					Name:      "name",
+					Value:     user.Name,
+					Required:  true,
+					Contained: true,
+				})
+			}
+		}
+		@SectionGroup(SectionGroupProps{
+			Title:       "Avatar",
+			Description: "Your avatar will be displayed in the user interface.",
+		}) {
+			if user.Avatar.Valid {
+				<div class="flex items-center gap-2">
+					<img src={ user.Avatar.String } alt="Avatar" class="w-12 h-12 rounded-full border border-zinc-300"/>
+					<button hx-post="/settings/remove-avatar" hx-target="#settingsForm" hx-swap="innerHTML" class="text-red-500 hover:text-red-700">
+						Remove Avatar
+					</button>
+				</div>
+			}
+			@FormField(FormFieldProps{
+				Label: "",
+				For:   "avatar",
+			}) {
+				@Input(InputProps{
+					Type:      "file",
+					Name:      "avatar",
+					Contained: true,
+					ClassName: "block w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2",
+				})
+			}
+		}
+		@SectionFooter() {
+			<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 text-center">
+				@SubmitButtonSpinner()
+				<span data-loading-class="hidden">Save changes</span>
+			</button>
+		}
+	</form>
 }

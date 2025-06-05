@@ -44,6 +44,7 @@ func New() *chi.Mux {
 				r.Get("/about", templ.Handler(html.AboutPage()).ServeHTTP)
 				r.Get("/logout", handler.Logout)
 				r.Get("/settings", handler.SettingsPage)
+				r.Post("/settings", handler.SettingsForm)
 			})
 		})
 

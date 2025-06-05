@@ -2,8 +2,8 @@ package html
 
 templ SetupPage() {
 	@SimpleLayout(SimpleLayoutProps{
-		Title: "Setup Admin Account",
-		Heading: "Setup Admin Account",
+		Title:      "Setup Admin Account",
+		Heading:    "Setup Admin Account",
 		Subheading: "Please fill in the details below to create your account.",
 	}) {
 		@SetupForm()
@@ -22,44 +22,46 @@ templ SetupForm() {
 		// </div>
 		@FormField(FormFieldProps{
 			Label: "Name",
-			For: "name",
+			For:   "name",
 		}) {
 			@Input(InputProps{
-				Type: "text",
-				Id: "name",
+				Type:         "text",
+				Id:           "name",
 				Autocomplete: "name",
-				Name: "name",
-				Required: true,
-				Autofocus: true,
-				Placeholder: "John Doe",
+				Name:         "name",
+				Required:     true,
+				Autofocus:    true,
+				Placeholder:  "John Doe",
+				HasIcon:      true,
 			})
 			@IdCardIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 		}
 		@FormField(FormFieldProps{
 			Label: "Email",
-			For: "email",
+			For:   "email",
 		}) {
 			@Input(InputProps{
-				Type: "email",
-				Id: "email",
+				Type:         "email",
+				Id:           "email",
 				Autocomplete: "email",
-				Name: "email",
-				Required: true,
-				Placeholder: "email@example.com",
+				Name:         "email",
+				Required:     true,
+				Placeholder:  "email@example.com",
+				HasIcon:      true,
 			})
 			@AtSymbolIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 		}
-
 		@FormField(FormFieldProps{
 			Label: "Password",
-			For: "password",
+			For:   "password",
 		}) {
 			@Input(InputProps{
-				Type: "password",
-				Id: "password",
-				Name: "password",
-				Required: true,
+				Type:        "password",
+				Id:          "password",
+				Name:        "password",
+				Required:    true,
 				Placeholder: "••••••••",
+				HasIcon:     true,
 			})
 			@KeyIcon("size-5 text-zinc-500 absolute top-1/2 left-3 -translate-y-1/2 peer-focus:text-black")
 		}

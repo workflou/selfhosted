@@ -1,0 +1,43 @@
+package html
+
+type SectionProps struct {
+	Title string
+}
+
+templ Section(props SectionProps) {
+	<section class="p-4 flex flex-col gap-4">
+		if props.Title != "" {
+			<div class="text-lg font-semibold">{ props.Title }</div>
+		}
+		{ children... }
+	</section>
+}
+
+type SectionGroupProps struct {
+	Title       string
+	Description string
+}
+
+templ SectionGroup(props SectionGroupProps) {
+	<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between   border-b border-zinc-200 pb-4">
+		<div class="flex flex-col gap-0.5 flex-[2]">
+			if props.Title != "" {
+				<div class="text-sm font-semibold">{ props.Title }</div>
+			}
+			if props.Description != "" {
+				<div class="text-sm text-zinc-500">{ props.Description }</div>
+			}
+		</div>
+		<div class="flex-[5]">
+			{ children... }
+		</div>
+	</div>
+}
+
+templ SectionFooter() {
+	<div class="flex justify-start items-start">
+		<div>
+			{ children... }
+		</div>
+	</div>
+}
