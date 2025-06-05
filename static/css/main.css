@@ -51,7 +51,7 @@ label {
 }
 
 section {
-    @apply bg-white shadow-sm rounded-xl border border-zinc-300;
+    @apply bg-white shadow-xs rounded-xl border border-zinc-300;
 
     header {
         @apply bg-zinc-100 rounded-t-xl px-5 py-5 border-b border-b-[2px] border-zinc-200 outline-solid outline-zinc-50 outline-[1px] -outline-offset-1;

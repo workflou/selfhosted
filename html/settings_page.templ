@@ -41,25 +41,57 @@ templ SettingsForm() {
 			Title:       "Avatar",
 			Description: "Your avatar will be displayed in the user interface.",
 		}) {
-			if user.Avatar.Valid {
-				<div class="flex items-center gap-2">
-					<img src={ user.Avatar.String } alt="Avatar" class="w-12 h-12 rounded-full border border-zinc-300"/>
-					<button hx-post="/settings/remove-avatar" hx-target="#settingsForm" hx-swap="innerHTML" class="text-red-500 hover:text-red-700">
-						Remove Avatar
-					</button>
-				</div>
-			}
-			@FormField(FormFieldProps{
-				Label: "",
-				For:   "avatar",
-			}) {
-				@Input(InputProps{
-					Type:      "file",
-					Name:      "avatar",
-					Contained: true,
-					ClassName: "block w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2",
-				})
-			}
+			<div class="flex flex-col gap-1.5">
+				if user.Avatar.Valid {
+					<div class="flex items-center gap-2">
+						<img src={ user.Avatar.String } alt="Avatar" class="w-12 h-12 rounded-full border border-zinc-300"/>
+						<button hx-post="/settings/remove-avatar" hx-target="#settingsForm" hx-swap="innerHTML" class="text-red-500 hover:text-red-700">
+							Remove Avatar
+						</button>
+					</div>
+				} else {
+					<canvas
+						id="avatar-preview"
+						class="border border-zinc-300 rounded-full hidden size-[64px] bg-zinc-100 bg-cover"
+						height="64"
+						width="64"
+						script="on clear call my getContext('2d')'s clearRect(0, 0, my width, my height)"
+					></canvas>
+				}
+				<input
+					type="file"
+					id="avatar"
+					accept="image/png, image/gif, image/jpeg"
+					_="
+          on input 
+             make a FileReader called reader
+			 add .hidden to #avatar-preview
+                 if first of my files is not null
+                     call reader.readAsDataURL(first of my files)
+                     wait for a load from reader
+					 if reader.result is null
+			 	     	add .hidden to #avatar-preview
+						call console.error('FileReader failed to read the file')
+						exit
+					 end
+                     make an Image called img
+                     set img.src to reader.result
+                     wait for a load from img
+					 remove .hidden from #avatar-preview
+                     set ctx to #avatar-preview's getContext('2d')
+					 set top to (height of img - cropHeight) / 2
+					 call ctx.drawImage(
+						 img, 
+						 0, 0,
+						 #avatar-preview.width, #avatar-preview.height
+					 )
+                    otherwise
+                        trigger clear on the #avatar-preview
+			 	     	add .hidden to #avatar-preview
+						"
+					class="block max-w-sm w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2"
+				/>
+			</div>
 		}
 		@SectionFooter() {
 			<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 text-center">

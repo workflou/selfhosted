@@ -88,6 +88,8 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
+	loginRateLimiter.Counter().IncrementBy(email, time.Now(), -1)
+
 	// w.Header().Set("HX-Location", "/")
 	w.Header().Set("HX-Trigger", `{"redirect": "/"}`)
 	w.Header().Set("HX-Push-Url", `/`)

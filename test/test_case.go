@@ -86,6 +86,24 @@ func (tc *TestCase) Post(path string, body url.Values) (*http.Response, error) {
 	return res, nil
 }
 
+func (tc *TestCase) PostMultipart(path string, body url.Values) (*http.Response, error) {
+	req, _ := http.NewRequest("POST", tc.Server.URL+path, strings.NewReader(body.Encode()))
+	req.Header.Set("Content-Type", "multipart/form-data")
+	if tc.UserCookie != nil {
+		req.AddCookie(tc.UserCookie)
+	}
+
+	res, err := tc.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	tc.LastResponse = res
+	tc.LastDocument, _ = goquery.NewDocumentFromReader(res.Body)
+
+	return res, nil
+}
+
 func (tc *TestCase) SetupAdmin() {
 	hash, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 	if err != nil {
