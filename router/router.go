@@ -43,20 +43,7 @@ func New() *chi.Mux {
 				r.Get("/", handler.HomePage)
 				r.Get("/about", templ.Handler(html.AboutPage()).ServeHTTP)
 				r.Get("/logout", handler.Logout)
-
-				r.Get("/settings/profile", func(w http.ResponseWriter, r *http.Request) {
-					w.Write([]byte("Profile Settings Page"))
-				})
-				r.Get("/settings/billing", func(w http.ResponseWriter, r *http.Request) {
-					w.Write([]byte("Billing Settings Page"))
-				})
-				r.Get("/settings/notifications", func(w http.ResponseWriter, r *http.Request) {
-					w.Write([]byte("Notification Settings Page"))
-				})
-				r.Get("/settings/invoices", func(w http.ResponseWriter, r *http.Request) {
-					w.Write([]byte("Invoices Page"))
-				})
-
+				r.Get("/settings", handler.SettingsPage)
 			})
 		})
 

@@ -1,7 +1,6 @@
 package html
 
 import "selfhosted/app"
-import "fmt"
 
 templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 	@BaseLayout(title) {
@@ -65,8 +64,8 @@ templ Sidebar() {
 		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-50"
 	>
 		<div class="flex flex-col gap-3 h-full overflow-y-auto">
-			<div class="shrink-0 h-12">
-				@UserMenu()
+			<div class="shrink-0 px-2 py-2">
+				@Logo()
 			</div>
 			<div class="shrink-0">
 				@Separator()
@@ -81,49 +80,31 @@ templ Sidebar() {
 						@FolderOpenIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
 						<span class="truncate">About Page</span>
 					}
-					@NavLink(NavlinkProps{Url: "/settings"}) {
-						@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-						<span class="truncate">System Configuration and Advanced Settings</span>
-					}
-				</ul>
-				<ul class="flex flex-col gap-0.5">
-					@NavLinkGroup("Resource Management")
-					@NavLink(NavlinkProps{Url: "/students"}) {
-						@AcademicCapIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-						<span class="truncate">Student Management</span>
-					}
-					@NavLink(NavlinkProps{Url: "/energy"}) {
-						@Battery100Icon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-						<span class="truncate">Energy Consumption Analytics & More</span>
-					}
-					@NavLink(NavlinkProps{Url: "/projects"}) {
-						@BriefcaseIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-						<span class="truncate">Project Management</span>
-					}
-					@NavLink(NavlinkProps{Url: "/more", Strict: true}) {
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"></path>
-						</svg>
-						<span class="truncate">More</span>
-					}
 				</ul>
 			</nav>
 			if user != nil {
 				<nav>
 					<ul class="flex flex-col gap-0.5">
-						@NavLinkGroup(fmt.Sprintf("%s", user.Name))
+						// @NavLinkGroup(fmt.Sprintf("%s", user.Name))
+						@NavLink(NavlinkProps{Url: "/help", External: true}) {
+							@HelpIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+							<span class="truncate">Help</span>
+						}
 						@NavLink(NavlinkProps{Url: "/settings"}) {
 							@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
 							<span class="truncate">Settings</span>
 						}
-						<li class="group">
-							<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-								@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-								<span class="truncate">Sign Out</span>
-							</a>
-						</li>
+						// <li class="group">
+						// 	<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
+						// 		@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+						// 		<span class="truncate">Sign Out</span>
+						// 	</a>
+						// </li>
 					</ul>
 				</nav>
+				<div class="shrink-0">
+					@UserMenu()
+				</div>
 			}
 		</div>
 	</div>
@@ -138,16 +119,16 @@ templ SidebarOverlay() {
 
 templ UserMenu() {
 	{{ user := app.GetUserFromContext(ctx) }}
-	<div class="relative ">
+	<div class="relative bg-gradient-to-t from-zinc-100 to-white rounded-xl p-2 border border-zinc-300/80 outline-white/60 transition-all duration-200 ease-in-out">
 		<input type="checkbox" class="peer/user-menu hidden" id="user-menu-toggle"/>
 		<input type="checkbox" class="peer/settings-modal hidden" id="settings-modal-toggle"/>
 		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer rounded-xl outline-white border border-transparent p-1">
 			if user.Avatar.String == "" {
-				<div class="size-9 rounded-full bg-white flex items-center justify-center shrink-0">
-					<span class="text-zinc-700 text-sm font-semibold">{ string( user.Name[0]) }</span>
+				<div class="size-8 rounded-full bg-zinc-600 flex items-center justify-center shrink-0">
+					<span class="text-white text-sm font-semibold">{ string( user.Name[0]) }</span>
 				</div>
 			} else {
-				<img src="{ user.Avatar.String }" alt="{ user.Name }'s avatar" class="size-9 rounded-full object-cover shrink-0"/>
+				<img src="{ user.Avatar.String }" alt="{ user.Name }'s avatar" class="size-8 rounded-full object-cover shrink-0"/>
 			}
 			<div class="flex flex-col flex-1 min-w-0">
 				<span class="text-sm text-zinc-800 font-semibold truncate">
@@ -177,45 +158,55 @@ type Breadcrumb struct {
 }
 
 templ Breadcrumbs(breadcrumbs []Breadcrumb) {
-	<div class="flex items-center gap-4 text-sm text-zinc-500">
-		<div class="w-[1px] h-5 bg-zinc-300 block"></div>
-		<div class="flex items-center gap-2 min-w-0">
-			for i, breadcrumb := range breadcrumbs {
-				if i > 0 {
-					<span class="text-xs hidden lg:block flex-shrink-0">&gt;</span>
+	if len(breadcrumbs) > 0 {
+		<div class="flex items-center gap-4 text-sm text-zinc-500">
+			<div class="w-[1px] h-5 bg-zinc-300 block"></div>
+			<div class="flex items-center gap-2 min-w-0">
+				for i, breadcrumb := range breadcrumbs {
+					if i > 0 {
+						<span class="text-xs hidden lg:block flex-shrink-0">&gt;</span>
+					}
+					if breadcrumb.Url != "" {
+						<a
+							href={ templ.URL(breadcrumb.Url) }
+							class={
+								"hover:text-zinc-800 hover:underline truncate min-w-0 max-w-[200px]",
+								templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
+							}
+						>
+							{ breadcrumb.Label }
+						</a>
+					} else {
+						<span
+							class={
+								"text-zinc-900 truncate min-w-0 max-w-[200px]",
+								templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
+							}
+						>{ breadcrumb.Label }</span>
+					}
 				}
-				if breadcrumb.Url != "" {
-					<a
-						href={ templ.URL(breadcrumb.Url) }
-						class={
-							"hover:text-zinc-800 hover:underline truncate min-w-0 max-w-[200px]",
-							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
-						}
-					>
-						{ breadcrumb.Label }
-					</a>
-				} else {
-					<span
-						class={
-							"text-zinc-900 truncate min-w-0 max-w-[200px]",
-							templ.KV("hidden lg:block", i != len(breadcrumbs)-1),
-						}
-					>{ breadcrumb.Label }</span>
-				}
-			}
+			</div>
 		</div>
-	</div>
+	} else {
+		<div></div>
+	}
 }
 
 type NavlinkProps struct {
-	Url    string
-	Strict bool
+	Url      string
+	Strict   bool
+	External bool
 }
 
 templ NavLink(props NavlinkProps) {
 	<li data-active?={ app.IsActiveUrl(ctx, props.Url, props.Strict) } class="group">
 		<a hx-boost href={ templ.URL(props.Url) } class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-			{ children... }
+			<span class="flex-1 min-w-0 truncate flex items-center gap-2">
+				{ children... }
+			</span>
+			if props.External {
+				@ExternalIcon("size-4 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
+			}
 		</a>
 	</li>
 }
@@ -226,4 +217,11 @@ templ NavLinkGroup(label string) {
 			{ label }
 		</span>
 	</li>
+}
+
+templ Logo() {
+	<a href="/" class="flex items-center gap-2">
+		<img src="/static/img/logo.svg" alt="Logo" class="size-8"/>
+		<span class="text-lg font-semibold text-zinc-900">SelfHosted</span>
+	</a>
 }

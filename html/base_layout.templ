@@ -1,6 +1,7 @@
 package html
 
 import "selfhosted/app"
+import "fmt"
 
 templ BaseLayout(title string) {
 	<!DOCTYPE html>
@@ -9,7 +10,7 @@ templ BaseLayout(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title } - { app.Name }</title>
-			<link rel="stylesheet" href="/static/css/dist.css?v=1"/>
+			<link rel="stylesheet" href={ fmt.Sprintf(`/static/css/dist.css?v=%s`, app.CssVersion) }/>
 			<script src="/static/js/htmx@2.0.4.min.js" defer></script>
 			<script src="/static/js/htmx-ext-loading-states@2.0.0.js" defer></script>
 			<script src="/static/js/hyperscript@0.9.14.min.js" defer></script>
