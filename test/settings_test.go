@@ -33,10 +33,8 @@ func TestSettings(t *testing.T) {
 		tc.LogIn("admin@example.com", "password123")
 		tc.Get("/settings")
 		tc.AssertStatus(http.StatusOK)
-		tc.AssertElementVisible("form[hx-post='/settings']")
 		tc.AssertElementVisible("input[name='name']")
 		tc.AssertElementVisible("input[name='avatar']")
-		tc.AssertElementVisible("button[type='submit']")
 	})
 
 	t.Run("name can be updated", func(t *testing.T) {
@@ -50,7 +48,7 @@ func TestSettings(t *testing.T) {
 			"name": {"New Admin Name"},
 		}
 
-		tc.Post("/settings", formData)
+		tc.Post("/settings/name", formData)
 		tc.AssertStatus(http.StatusOK)
 		tc.AssertHeader("HX-Reswap", "none")
 
@@ -76,12 +74,6 @@ func TestSettings(t *testing.T) {
 		body := new(bytes.Buffer)
 		writer := multipart.NewWriter(body)
 
-		name, err := writer.CreateFormField("name")
-		if err != nil {
-			t.Fatalf("failed to create form field: %v", err)
-		}
-		_, err = name.Write([]byte("Admin"))
-
 		avatar, err := writer.CreateFormFile("avatar", "avatar.jpeg")
 		if err != nil {
 			t.Fatalf("failed to create form file: %v", err)
@@ -91,7 +83,12 @@ func TestSettings(t *testing.T) {
 			t.Fatalf("failed to copy avatar file: %v", err)
 		}
 
-		tc.PostMultipart("/settings", body, writer)
+		err = writer.Close()
+		if err != nil {
+			t.Fatalf("failed to close multipart writer: %v", err)
+		}
+
+		tc.PostMultipart("/settings/avatar", body, writer)
 
 		tc.AssertStatus(http.StatusOK)
 		tc.AssertHeader("HX-Reswap", "none")
@@ -106,4 +103,6 @@ func TestSettings(t *testing.T) {
 			t.Error("expected avatar to be set, but it was empty")
 		}
 	})
+
+	// todo: test that only images can be uploaded
 }

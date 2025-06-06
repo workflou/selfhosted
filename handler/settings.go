@@ -70,14 +70,6 @@ func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
 
 	path, err := uploadFile(r, "avatar", "./uploads/avatars")
-	if err != nil && err != http.ErrMissingFile {
-		slog.Error("File upload error", "error", err)
-		w.Header().Set("HX-Reswap", "none")
-		w.WriteHeader(http.StatusInternalServerError)
-		toast.Error("Upload failed", err.Error()).Send(r.Context(), w)
-		return
-	}
-
 	if err != nil {
 		slog.Error("File upload error", "error", err)
 		w.Header().Set("HX-Reswap", "none")
@@ -111,6 +103,7 @@ func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
 		String: "/" + path,
 		Valid:  true,
 	}
+	w.Header().Set("HX-Reswap", "none")
 	html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
 	toast.Success("Avatar updated", "Your avatar has been successfully updated.").Send(r.Context(), w)
 	return
