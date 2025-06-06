@@ -21,10 +21,7 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 	html.SettingsPage().Render(r.Context(), w)
 }
 
-func SettingsForm(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(10 << 20)
-	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
-
+func SettingsNameForm(w http.ResponseWriter, r *http.Request) {
 	user := app.GetUserFromContext(r.Context())
 	if user == nil {
 		w.Header().Set("HX-Reswap", "none")
@@ -32,6 +29,45 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 		toast.Error("Unauthorized", "You must be logged in to update your profile.").Send(r.Context(), w)
 		return
 	}
+
+	r.ParseForm()
+
+	name := r.FormValue("name")
+	if name == "" {
+		w.Header().Set("HX-Reswap", "none")
+		w.WriteHeader(http.StatusBadRequest)
+		toast.Error("Invalid request", "Name is required").Send(r.Context(), w)
+		return
+	}
+
+	err := store.New(database.DB).UpdateUserName(r.Context(), store.UpdateUserNameParams{
+		ID:   user.ID,
+		Name: name,
+	})
+	if err != nil {
+		w.Header().Set("HX-Reswap", "none")
+		w.WriteHeader(http.StatusInternalServerError)
+		toast.Error("Update failed", "An error occurred while updating your profile. Please try again later.").Send(r.Context(), w)
+		return
+	}
+
+	user.Name = name
+	w.Header().Set("HX-Reswap", "none")
+	html.UserName(user.Name).Render(r.Context(), w)
+	toast.Success("Name updated", "Your name has been successfully updated.").Send(r.Context(), w)
+}
+
+func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
+	user := app.GetUserFromContext(r.Context())
+	if user == nil {
+		w.Header().Set("HX-Reswap", "none")
+		w.WriteHeader(http.StatusUnauthorized)
+		toast.Error("Unauthorized", "You must be logged in to update your profile.").Send(r.Context(), w)
+		return
+	}
+
+	r.ParseMultipartForm(10 << 20)
+	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
 
 	path, err := uploadFile(r, "avatar", "./uploads/avatars")
 	if err != nil && err != http.ErrMissingFile {
@@ -62,12 +98,15 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 			String: "/" + path,
 			Valid:  true,
 		}
+		html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
+		toast.Success("Avatar updated", "Your avatar has been successfully updated.").Send(r.Context(), w)
+		return
 	}
 
-	if r.FormValue("name") != "" {
-		err = store.New(database.DB).UpdateUserName(r.Context(), store.UpdateUserNameParams{
+	if name := r.FormValue("name"); name != "" {
+		err := store.New(database.DB).UpdateUserName(r.Context(), store.UpdateUserNameParams{
 			ID:   user.ID,
-			Name: r.FormValue("name"),
+			Name: name,
 		})
 		if err != nil {
 			w.Header().Set("HX-Reswap", "none")
@@ -75,13 +114,13 @@ func SettingsForm(w http.ResponseWriter, r *http.Request) {
 			toast.Error("Update failed", "An error occurred while updating your profile. Please try again later.").Send(r.Context(), w)
 			return
 		}
-		user.Name = r.FormValue("name")
+		user.Name = name
+		html.UserName(user.Name).Render(r.Context(), w)
+		toast.Success("Name updated", "Your name has been successfully updated.").Send(r.Context(), w)
+		return
 	}
 
 	w.Header().Set("HX-Reswap", "none")
-	toast.Success("Profile updated", "Your profile has been successfully updated.").Send(r.Context(), w)
-	html.UserName(user.Name).Render(r.Context(), w)
-	html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
 }
 
 func uploadFile(r *http.Request, fieldName string, uploadsPath string) (string, error) {

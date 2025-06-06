@@ -26,6 +26,7 @@ type InputProps struct {
 	HasIcon      bool
 	Contained    bool
 	ClassName    string
+	Attributes   templ.Attributes
 }
 
 templ Input(props InputProps) {
@@ -46,5 +47,6 @@ templ Input(props InputProps) {
 		value={ props.Value }
 		autofocus?={ props.Autofocus }
 		placeholder={ props.Placeholder }
+		{ props.Attributes... }
 	/>
 }

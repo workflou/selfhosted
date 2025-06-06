@@ -12,58 +12,73 @@ templ SettingsPage() {
 		@Section(SectionProps{
 			Title: "Settings",
 		}) {
-			@SettingsForm()
+			@NameSettingsForm()
+			@SectionGroupSeparator()
+			@AvatarSettingsForm()
 		}
 	}
 }
 
-templ SettingsForm() {
+templ NameSettingsForm() {
 	{{ user := app.GetUserFromContext(ctx) }}
-	<form hx-post="/settings" hx-swap="outerHTML" class="flex flex-col gap-4" enctype="multipart/form-data">
-		@SectionGroup(SectionGroupProps{
-			Title:       "Your Name",
-			Description: "Other users will see this name.",
+	@SectionGroup(SectionGroupProps{
+		Title:       "Your Name",
+		Description: "Other users will see this name.",
+	}) {
+		@FormField(FormFieldProps{
+			Label: "",
+			For:   "name",
 		}) {
-			@FormField(FormFieldProps{
-				Label: "",
-				For:   "name",
-			}) {
-				@Input(InputProps{
-					Type:      "text",
-					Name:      "name",
-					Value:     user.Name,
-					Required:  true,
-					Contained: true,
-				})
-			}
+			@Input(InputProps{
+				Type:      "text",
+				Name:      "name",
+				Value:     user.Name,
+				Required:  true,
+				Contained: true,
+				Attributes: templ.Attributes{
+					"hx-post":    "/settings/name",
+					"hx-swap":    "none",
+					"hx-trigger": "blur, keyup[key=='Enter']",
+				},
+			})
 		}
-		@SectionGroup(SectionGroupProps{
-			Title:       "Avatar",
-			Description: "Your avatar will be displayed in the user interface.",
-		}) {
-			<div class="flex flex-col gap-1.5">
-				if user.Avatar.Valid {
-					<div class="flex items-center gap-2" id="user-avatar-preview">
-						<img src={ user.Avatar.String } alt="Avatar" class="size-[64px] rounded-full border border-zinc-300"/>
-					</div>
-				} else {
-					<div id="user-avatar-preview"></div>
-				}
-				<canvas
-					hx-preserve="true"
-					id="avatar-preview"
-					class="border border-zinc-300 rounded-full hidden size-[64px] bg-zinc-100 bg-cover"
-					height="64"
-					width="64"
-					script="on clear call my getContext('2d')'s clearRect(0, 0, my width, my height)"
-				></canvas>
-				<input
-					hx-preserve="true"
-					type="file"
-					id="avatar"
-					name="avatar"
-					accept="image/png, image/gif, image/jpeg"
-					_="
+	}
+}
+
+templ AvatarSettingsForm() {
+	{{ user := app.GetUserFromContext(ctx) }}
+	@SectionGroup(SectionGroupProps{
+		Title:       "Avatar",
+		Description: "Your avatar will be displayed in the user interface.",
+	}) {
+		<div class="flex flex-col gap-1.5">
+			if user.Avatar.Valid {
+				<div class="flex items-center gap-2" id="user-avatar-preview">
+					<img src={ user.Avatar.String } alt="Avatar" class="size-[64px] rounded-full border border-zinc-300"/>
+				</div>
+			} else {
+				<div id="user-avatar-preview"></div>
+			}
+			<canvas
+				hx-preserve="true"
+				id="avatar-preview"
+				class="border border-zinc-300 rounded-full hidden size-[64px] bg-zinc-100 bg-cover"
+				height="64"
+				width="64"
+				script="on clear call my getContext('2d')'s clearRect(0, 0, my width, my height)"
+			></canvas>
+			<input
+				hx-preserve="true"
+				type="file"
+				id="avatar"
+				name="avatar"
+				accept="image/png, image/gif, image/jpeg"
+				hx-trigger="change, changed"
+				hx-post="/settings/avatar"
+				hx-swap="none"
+				hx-encoding="multipart/form-data"
+				enctype="multipart/form-data"
+				_="
           on input 
              make a FileReader called reader
 			 add .hidden to #avatar-preview
@@ -92,15 +107,8 @@ templ SettingsForm() {
 			 	     	add .hidden to #avatar-preview
 						remove .hidden from #user-avatar-preview
 						"
-					class="block max-w-sm w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2"
-				/>
-			</div>
-		}
-		@SectionFooter() {
-			<button data-loading-disable type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 text-center">
-				@SubmitButtonSpinner()
-				<span data-loading-class="hidden">Save changes</span>
-			</button>
-		}
-	</form>
+				class="block max-w-sm w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2"
+			/>
+		</div>
+	}
 }
