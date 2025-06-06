@@ -61,7 +61,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 templ Sidebar() {
 	{{ user := app.GetUserFromContext(ctx) }}
 	<div
-		class="w-72 h-screen p-3 py-2 bg-zinc-200/60 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-[999]"
+		class="w-72 h-screen p-3 py-2 bg-zinc-200 backdrop-blur-sm lg:bg-transparent fixed -ml-72 peer-checked:ml-0 transition-all duration-200 ease-in-out border-r border-zinc-300 lg:border-none shadow-lg lg:shadow-none z-[999]"
 	>
 		<div class="flex flex-col gap-3 h-full overflow-y-auto">
 			<div class="shrink-0 px-2 pt-2">
