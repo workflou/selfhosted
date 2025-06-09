@@ -104,5 +104,29 @@ func TestSettings(t *testing.T) {
 		}
 	})
 
-	// todo: test that only images can be uploaded
+	t.Run("invalid avatar upload is rejected", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		tc.SetupAdmin()
+		tc.LogIn("admin@example.com", "password123")
+
+		body := new(bytes.Buffer)
+		writer := multipart.NewWriter(body)
+
+		nonImageFile, err := writer.CreateFormFile("avatar", "document.txt")
+		if err != nil {
+			t.Fatalf("failed to create form file: %v", err)
+		}
+		_, err = nonImageFile.Write([]byte("This is a text file, not an image."))
+		if err != nil {
+			t.Fatalf("failed to write to form file: %v", err)
+		}
+		err = writer.Close()
+		if err != nil {
+			t.Fatalf("failed to close multipart writer: %v", err)
+		}
+		tc.PostMultipart("/settings/avatar", body, writer)
+		tc.AssertStatus(http.StatusBadRequest)
+	})
 }

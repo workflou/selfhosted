@@ -2,8 +2,6 @@ package handler
 
 import (
 	"database/sql"
-	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,9 +10,8 @@ import (
 	"selfhosted/database"
 	"selfhosted/database/store"
 	"selfhosted/html"
+	"selfhosted/pkg/file"
 	"selfhosted/toast"
-
-	"github.com/google/uuid"
 )
 
 func SettingsPage(w http.ResponseWriter, r *http.Request) {
@@ -23,12 +20,6 @@ func SettingsPage(w http.ResponseWriter, r *http.Request) {
 
 func SettingsNameForm(w http.ResponseWriter, r *http.Request) {
 	user := app.GetUserFromContext(r.Context())
-	if user == nil {
-		w.Header().Set("HX-Reswap", "none")
-		w.WriteHeader(http.StatusUnauthorized)
-		toast.Error("Unauthorized", "You must be logged in to update your profile.").Send(r.Context(), w)
-		return
-	}
 
 	r.ParseForm()
 
@@ -59,17 +50,18 @@ func SettingsNameForm(w http.ResponseWriter, r *http.Request) {
 
 func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
 	user := app.GetUserFromContext(r.Context())
-	if user == nil {
-		w.Header().Set("HX-Reswap", "none")
-		w.WriteHeader(http.StatusUnauthorized)
-		toast.Error("Unauthorized", "You must be logged in to update your profile.").Send(r.Context(), w)
-		return
-	}
 
 	r.ParseMultipartForm(10 << 20)
 	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
 
-	path, err := uploadFile(r, "avatar", "./uploads/avatars")
+	if !file.ValidateImageFromRequest(r, "avatar") {
+		w.Header().Set("HX-Reswap", "none")
+		w.WriteHeader(http.StatusBadRequest)
+		toast.Error("Invalid file type", "Only image files are allowed.").Send(r.Context(), w)
+		return
+	}
+
+	path, err := file.UploadFromRequest(r, "avatar", "./uploads/avatars")
 	if err != nil {
 		slog.Error("File upload error", "error", err)
 		w.Header().Set("HX-Reswap", "none")
@@ -107,32 +99,4 @@ func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
 	html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
 	toast.Success("Avatar updated", "Your avatar has been successfully updated.").Send(r.Context(), w)
 	return
-}
-
-func uploadFile(r *http.Request, fieldName string, uploadsPath string) (string, error) {
-	file, fileHeader, err := r.FormFile(fieldName)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	err = os.MkdirAll(uploadsPath, os.ModePerm)
-	if err != nil {
-		return "", fmt.Errorf("failed to create upload directory: %w", err)
-	}
-
-	filename := uuid.New().String() + filepath.Ext(fileHeader.Filename)
-	path := filepath.Join(uploadsPath, filename)
-
-	dst, err := os.Create(path)
-	if err != nil {
-		return "", fmt.Errorf("failed to create upload file: %w", err)
-	}
-	defer dst.Close()
-
-	if _, err := io.Copy(dst, file); err != nil {
-		return "", fmt.Errorf("failed to copy uploaded file: %w", err)
-	}
-
-	return path, nil
 }
