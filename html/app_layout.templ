@@ -240,7 +240,7 @@ templ NavLinkGroup(label string) {
 }
 
 templ Logo() {
-	<a href="/" class="flex items-center gap-2">
+	<a hx-boost="true" href="/" class="flex items-center gap-2">
 		<img src="/static/img/logo.svg" alt="Logo" class="size-8"/>
 		<span class="text-lg font-semibold text-zinc-900">SelfHosted</span>
 	</a>
