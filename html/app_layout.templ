@@ -54,6 +54,7 @@ templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 					{ children... }
 				</div>
 			</div>
+			<div id="user-modal" class="hidden"></div>
 		</div>
 	}
 }
@@ -88,7 +89,6 @@ templ Sidebar() {
 				</div>
 				<nav>
 					<ul class="flex flex-col gap-0.5">
-						// @NavLinkGroup(fmt.Sprintf("%s", user.Name))
 						@NavLink(NavlinkProps{Url: "/help", External: true}) {
 							@HelpIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
 							<span class="truncate">Help</span>
@@ -97,12 +97,6 @@ templ Sidebar() {
 							@AdjustmentsVerticalIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
 							<span class="truncate">Settings</span>
 						}
-						// <li class="group">
-						// 	<a href="/logout" class="group flex gap-2 text-sm items-center hover:bg-gradient-to-b hover:from-white hover:to-zinc-100 hover:shadow-sm group-data-[active]:bg-gradient-to-b group-data-[active]:from-white group-data-[active]:to-zinc-100 group-data-[active]:shadow-sm rounded-xl outline-white/60 border border-transparent hover:border-white p-2">
-						// 		@OutIcon("size-5 text-zinc-400 group-hover:text-black group-data-[active]:text-black shrink-0")
-						// 		<span class="truncate">Sign Out</span>
-						// 	</a>
-						// </li>
 					</ul>
 				</nav>
 				<div class="shrink-0">
@@ -122,7 +116,19 @@ templ SidebarOverlay() {
 
 templ UserMenu() {
 	{{ user := app.GetUserFromContext(ctx) }}
-	<div class="relative bg-gradient-to-t from-zinc-100 to-white rounded-xl p-2 border border-zinc-300/80 outline-white/60 transition-all duration-200 ease-in-out">
+	<div
+		hx-get="/user"
+		hx-target="#user-modal"
+		hx-indicator="#user-modal-spinner"
+		hx-swap="outerHTML"
+		class="relative bg-gradient-to-t from-zinc-100 to-white rounded-xl p-2 border border-zinc-300/80 outline-white/60 transition-all duration-200 ease-in-out"
+	>
+		@Spinner(SpinnerProps{
+			ClassNames: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-6 text-zinc-400 htmx-indicator",
+			Attributes: templ.Attributes{
+				"id": "user-modal-spinner",
+			},
+		})
 		<input type="checkbox" class="peer/user-menu hidden" id="user-menu-toggle"/>
 		<input type="checkbox" class="peer/settings-modal hidden" id="settings-modal-toggle"/>
 		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer rounded-xl outline-white border border-transparent p-1">
@@ -244,4 +250,40 @@ templ Logo() {
 		<img src="/static/img/logo.svg" alt="Logo" class="size-8"/>
 		<span class="text-lg font-semibold text-zinc-900">SelfHosted</span>
 	</a>
+}
+
+// todo: add re-usable modal component
+templ UserModal() {
+	{{ user := app.GetUserFromContext(ctx) }}
+	<div id="user-modal">
+		<div
+			id="user-modal-content"
+			class="absolute inset-0 flex items-center justify-center z-[9999] bg-zinc-100/05 backdrop-blur-xs min-w-[360px]"
+		>
+			<div class="flex flex-col md:flex-row w-full max-w-md">
+				<div
+					class="m-1 size-7 rounded-sm bg-black border border-zinc-200 flex items-center justify-center text-xl font-semibold text-white cursor-pointer"
+					_="
+						on click
+							remove #user-modal-content
+
+						on keydown from window
+							if event.key == 'Escape'
+								remove #user-modal-content
+							end	
+							
+							"
+				>
+					&times;
+				</div>
+				<div class="flex-1 relative w-full bg-gradient-to-b from-white/10 to-zinc-200/80 border border-zinc-200 rounded-2xl shadow-xl p-1.5 flex flex-col gap-2">
+					<div class="bg-white border border-zinc-300 rounded-xl gap-2 flex flex-col gap-3 ">
+						<nav class="p-2 min-h-[200px]">
+							{ user.Name }
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 }

@@ -51,6 +51,8 @@ func NewTestCase(t *testing.T) *TestCase {
 
 func (tc *TestCase) Close() {
 	tc.Server.Close()
+
+	os.RemoveAll("./uploads")
 }
 
 func (tc *TestCase) Get(path string) (*http.Response, error) {
@@ -169,6 +171,16 @@ func (tc *TestCase) AssertRedirect(statusCode int, location string) {
 
 	if tc.LastResponse.Request.Response.Header.Get("Location") != location {
 		tc.T.Fatalf("Expected redirect to %s, got %s", location, tc.LastResponse.Request.Response.Header.Get("Location"))
+	}
+}
+
+func (tc *TestCase) AssertNoRedirect() {
+	if tc.LastResponse == nil {
+		tc.T.Fatalf("No response available to assert no redirect")
+	}
+
+	if tc.LastResponse.Request != nil && tc.LastResponse.Request.Response != nil {
+		tc.T.Fatalf("Expected no redirect, but got status code %d", tc.LastResponse.Request.Response.StatusCode)
 	}
 }
 

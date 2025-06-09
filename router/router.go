@@ -46,6 +46,7 @@ func New() *chi.Mux {
 				r.Get("/settings", handler.SettingsPage)
 				r.Post("/settings/name", handler.SettingsNameForm)
 				r.Post("/settings/avatar", handler.SettingsAvatarForm)
+				r.Get("/user", handler.UserModal)
 			})
 		})
 

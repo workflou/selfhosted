@@ -4,3 +4,4 @@ database/store/
 *_templ.go
 static/css/dist.css
 uploads/
+test/uploads/
