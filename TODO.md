@@ -3,7 +3,7 @@
 [ ] Password Reset
 [ ] Google Oauth
 [ ] Registration handler
-[ ] Profile Settings
+[x] Profile Settings
 [ ] Team Management
 [ ] Team Switcher
 [ ] Team Members
