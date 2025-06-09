@@ -132,9 +132,9 @@ templ UserMenu() {
 		<input type="checkbox" class="peer/user-menu hidden" id="user-menu-toggle"/>
 		<input type="checkbox" class="peer/settings-modal hidden" id="settings-modal-toggle"/>
 		<label for="user-menu-toggle" class="flex gap-2 items-center cursor-pointer rounded-xl outline-white border border-transparent p-1">
-			@UserAvatar(user.Avatar.String, user.Name)
+			@UserAvatar(user.Avatar.String, user.Name, false)
 			<div class="flex flex-col flex-1 min-w-0">
-				@UserName(user.Name)
+				@UserName(user.Name, false)
 				<span class="text-xs text-zinc-500 truncate">
 					A.C.M.E.
 				</span>
@@ -146,14 +146,25 @@ templ UserMenu() {
 	</div>
 }
 
-templ UserName(name string) {
-	<span class="text-sm text-zinc-800 font-semibold truncate" id="user-name" hx-swap-oob="true">
+templ UserName(name string, oob bool) {
+	<span
+		class="text-sm text-zinc-800 font-semibold truncate"
+		id="user-name"
+		if oob {
+			hx-swap-oob="true"
+		}
+	>
 		{ name }
 	</span>
 }
 
-templ UserAvatar(avatar, name string) {
-	<div id="user-avatar" hx-swap-oob="true">
+templ UserAvatar(avatar, name string, oob bool) {
+	<div
+		id="user-avatar"
+		if oob {
+			hx-swap-oob="true"
+		}
+	>
 		if avatar == "" {
 			<div class="size-8 rounded-full bg-zinc-600 flex items-center justify-center shrink-0">
 				<span class="text-white text-sm font-semibold">{ string( name[0]) }</span>
@@ -276,11 +287,27 @@ templ UserModal() {
 				>
 					&times;
 				</div>
-				<div class="flex-1 relative w-full bg-gradient-to-b from-white/10 to-zinc-200/80 border border-zinc-200 rounded-2xl shadow-xl p-1.5 flex flex-col gap-2">
+				<div class="flex-1 relative w-full bg-gradient-to-b from-white/30 to-zinc-200/80 border border-zinc-200 rounded-2xl shadow-xl p-1.5 flex flex-col gap-2">
 					<div class="bg-white border border-zinc-300 rounded-xl gap-2 flex flex-col gap-3 ">
-						<nav class="p-2 min-h-[200px]">
-							{ user.Name }
-						</nav>
+						<nav class="p-2 min-h-[200px]"></nav>
+					</div>
+					<div class="bg-white border border-zinc-300 rounded-xl gap-2 flex items-center gap-3 p-3 text-sm text-zinc-800">
+						<div class="flex-1 flex flex-col">
+							<div class="font-semibold">
+								{ user.Name }
+							</div>
+							<div>
+								{ user.Email }
+							</div>
+						</div>
+						<div>
+							<a
+								href="/logout"
+								class="px-4 py-2 rounded-xl text-zinc-600 border border-zinc-300 cursor-pointer hover:bg-zinc-100 transition-colors duration-200 ease-in-out hover:text-zinc-900 "
+							>
+								Sign&nbsp;Out
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>

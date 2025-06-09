@@ -22,6 +22,7 @@ templ Spinner(props SpinnerProps) {
 
 templ SubmitButtonSpinner() {
 	@Spinner(SpinnerProps{
+		ClassNames: "size-4",
 		Attributes: templ.Attributes{
 			"data-loading": true,
 		},

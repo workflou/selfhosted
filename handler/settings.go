@@ -44,7 +44,7 @@ func SettingsNameForm(w http.ResponseWriter, r *http.Request) {
 
 	user.Name = name
 	w.Header().Set("HX-Reswap", "none")
-	html.UserName(user.Name).Render(r.Context(), w)
+	html.UserName(user.Name, true).Render(r.Context(), w)
 	toast.Success("Name updated", "Your name has been successfully updated.").Send(r.Context(), w)
 }
 
@@ -96,7 +96,7 @@ func SettingsAvatarForm(w http.ResponseWriter, r *http.Request) {
 		Valid:  true,
 	}
 	w.Header().Set("HX-Reswap", "none")
-	html.UserAvatar(user.Avatar.String, user.Name).Render(r.Context(), w)
+	html.UserAvatar(user.Avatar.String, user.Name, true).Render(r.Context(), w)
 	toast.Success("Avatar updated", "Your avatar has been successfully updated.").Send(r.Context(), w)
 	return
 }
