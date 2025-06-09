@@ -1,6 +1,7 @@
 package html
 
 import "selfhosted/app"
+import "selfhosted/database/store"
 
 templ AppLayout(title string, breadcrumbs []Breadcrumb) {
 	@BaseLayout(title) {
@@ -263,8 +264,12 @@ templ Logo() {
 	</a>
 }
 
+type UserModalProps struct {
+	Teams []store.GetUserTeamsRow
+}
+
 // todo: add re-usable modal component
-templ UserModal() {
+templ UserModal(props UserModalProps) {
 	{{ user := app.GetUserFromContext(ctx) }}
 	<div id="user-modal">
 		<div
@@ -289,7 +294,13 @@ templ UserModal() {
 				</div>
 				<div class="flex-1 relative w-full bg-gradient-to-b from-white/30 to-zinc-200/80 border border-zinc-200 rounded-2xl shadow-xl p-1.5 flex flex-col gap-2">
 					<div class="bg-white border border-zinc-300 rounded-xl gap-2 flex flex-col gap-3 ">
-						<nav class="p-2 min-h-[200px]"></nav>
+						<nav class="p-2 min-h-[200px]">
+							for _, team := range props.Teams {
+								@NavLink(NavlinkProps{}) {
+									<span class="truncate">{ team.Name.String }</span>
+								}
+							}
+						</nav>
 					</div>
 					<div class="bg-white border border-zinc-300 rounded-xl gap-2 flex items-center gap-3 p-3 text-sm text-zinc-800">
 						<div class="flex-1 flex flex-col">

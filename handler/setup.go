@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"net/mail"
 	"selfhosted/app"
@@ -58,7 +59,7 @@ func SetupForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = store.New(database.DB).CreateAdmin(r.Context(), store.CreateAdminParams{
+	adminId, err := store.New(database.DB).CreateAdmin(r.Context(), store.CreateAdminParams{
 		Name:     r.FormValue("name"),
 		Email:    strings.ToLower(r.FormValue("email")),
 		Password: string(hash),
@@ -68,6 +69,20 @@ func SetupForm(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+
+	teamId, err := store.New(database.DB).CreateTeam(r.Context(), store.CreateTeamParams{
+		Name: fmt.Sprintf("%s Team", r.FormValue("name")),
+	})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	store.New(database.DB).AddMemberToTeam(r.Context(), store.AddMemberToTeamParams{
+		UserID: adminId,
+		TeamID: teamId,
+		Role:   "owner",
+	})
 
 	app.AdminCount = 1
 

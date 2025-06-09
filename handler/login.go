@@ -49,6 +49,7 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 
 	_, err := mail.ParseAddress(email)
 	if err != nil {
+		slog.Error("Invalid email format", "email", email, "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		html.LoginForm().Render(r.Context(), w)
 		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)
@@ -57,6 +58,7 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 
 	u, err := store.New(database.DB).GetUserByEmail(r.Context(), email)
 	if err != nil || u.ID == 0 {
+		slog.Error("User not found", "email", email, "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		html.LoginForm().Render(r.Context(), w)
 		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)
@@ -65,6 +67,7 @@ func LoginForm(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(r.FormValue("password")))
 	if err != nil {
+		slog.Error("Password mismatch", "email", email, "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		html.LoginForm().Render(r.Context(), w)
 		toast.Error("Login failed", "The credentials you provided are invalid.").Send(r.Context(), w)

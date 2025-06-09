@@ -2,7 +2,7 @@
 SELECT COUNT(*) FROM users
 WHERE is_admin = true;
 
--- name: CreateAdmin :exec
+-- name: CreateAdmin :execlastid
 INSERT INTO users (name, email, password, is_admin)
 VALUES (?, ?, ?, true);
 

@@ -151,4 +151,25 @@ func TestSetup(t *testing.T) {
 		tc.Get("/setup")
 		tc.AssertRedirect(http.StatusSeeOther, "/login")
 	})
+
+	t.Run("a default team is created for the admin", func(t *testing.T) {
+		tc := NewTestCase(t)
+		defer tc.Close()
+
+		formData := url.Values{
+			"name":     {"Admin"},
+			"email":    {"admin2@example.com"},
+			"password": {"password123"},
+		}
+
+		tc.Post("/setup", formData)
+		tc.AssertDatabaseHas("teams", map[string]interface{}{
+			"name": "Admin Team",
+		})
+		tc.AssertDatabaseHas("members", map[string]interface{}{
+			"user_id": 1,
+			"team_id": 1,
+			"role":    "owner",
+		})
+	})
 }

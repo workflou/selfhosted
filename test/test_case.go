@@ -108,18 +108,30 @@ func (tc *TestCase) PostMultipart(path string, reader io.Reader, writer *multipa
 	return res, nil
 }
 
-func (tc *TestCase) SetupAdmin() {
+func (tc *TestCase) SetupAdmin() int64 {
 	hash, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 	if err != nil {
 		tc.T.Fatalf("Failed to hash password: %v", err)
 	}
 
-	store.New(database.DB).CreateAdmin(tc.T.Context(), store.CreateAdminParams{
+	adminId, _ := store.New(database.DB).CreateAdmin(tc.T.Context(), store.CreateAdminParams{
 		Name:     "Admin",
 		Email:    "admin@example.com",
 		Password: string(hash),
 	})
+
+	teamId, _ := store.New(database.DB).CreateTeam(tc.T.Context(), store.CreateTeamParams{
+		Name: "Admin Team",
+	})
+
+	store.New(database.DB).AddMemberToTeam(tc.T.Context(), store.AddMemberToTeamParams{
+		UserID: adminId,
+		TeamID: teamId,
+	})
+
 	app.AdminCount = 1
+
+	return adminId
 }
 
 func (tc *TestCase) CreateUser(name, email, password string) {
@@ -128,7 +140,7 @@ func (tc *TestCase) CreateUser(name, email, password string) {
 		tc.T.Fatalf("Failed to hash password: %v", err)
 	}
 
-	err = store.New(database.DB).CreateUser(tc.T.Context(), store.CreateUserParams{
+	_, err = store.New(database.DB).CreateUser(tc.T.Context(), store.CreateUserParams{
 		Name:     name,
 		Email:    strings.ToLower(email),
 		Password: string(hash),
@@ -223,6 +235,33 @@ func (tc *TestCase) AssertElementVisible(selector string) {
 		tc.T.Fatalf(
 			"Expected element with selector '%s' to be visible, but it was not found. The output was:\n%s",
 			selector,
+			tc.LastDocument.Text(),
+		)
+	}
+}
+
+func (tc *TestCase) AssertSee(text string) {
+	if tc.LastDocument == nil {
+		tc.T.Fatal("No response available to assert text presence")
+	}
+
+	if !strings.Contains(tc.LastDocument.Text(), text) {
+		tc.T.Fatalf(
+			"Expected to see text '%s', but it was not found. The output was:\n%s",
+			text,
+			tc.LastDocument.Text(),
+		)
+	}
+}
+
+func (tc *TestCase) AssertNotSee(text string) {
+	if tc.LastDocument == nil {
+		tc.T.Fatal("No response available to assert text absence")
+	}
+	if strings.Contains(tc.LastDocument.Text(), text) {
+		tc.T.Fatalf(
+			"Expected not to see text '%s', but it was found. The output was:\n%s",
+			text,
 			tc.LastDocument.Text(),
 		)
 	}
