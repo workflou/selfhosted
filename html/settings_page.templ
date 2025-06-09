@@ -25,6 +25,7 @@ templ NameSettingsForm() {
 		Title:       "Your Name",
 		Description: "Other users will see this name.",
 	}) {
+		@SectionGroupLoader("name-settings-form-loader")
 		@FormField(FormFieldProps{
 			Label: "",
 			For:   "name",
@@ -36,9 +37,10 @@ templ NameSettingsForm() {
 				Required:  true,
 				Contained: true,
 				Attributes: templ.Attributes{
-					"hx-post":    "/settings/name",
-					"hx-swap":    "none",
-					"hx-trigger": "change",
+					"hx-post":      "/settings/name",
+					"hx-swap":      "none",
+					"hx-trigger":   "change",
+					"hx-indicator": "#name-settings-form-loader",
 				},
 			})
 		}
@@ -51,6 +53,7 @@ templ AvatarSettingsForm() {
 		Title:       "Avatar",
 		Description: "Your avatar will be displayed in the user interface.",
 	}) {
+		@SectionGroupLoader("avatar-settings-form-loader")
 		<div class="flex flex-col gap-1.5">
 			if user.Avatar.Valid {
 				<div class="flex items-center gap-2" id="user-avatar-preview">
@@ -78,6 +81,8 @@ templ AvatarSettingsForm() {
 				hx-swap="none"
 				hx-encoding="multipart/form-data"
 				enctype="multipart/form-data"
+				data-loading-disable
+				hx-indicator="#avatar-settings-form-loader"
 				_="
           on input 
              make a FileReader called reader
@@ -107,7 +112,7 @@ templ AvatarSettingsForm() {
 			 	     	add .hidden to #avatar-preview
 						remove .hidden from #user-avatar-preview
 						"
-				class="block max-w-sm w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2"
+				class="block max-w-sm w-full text-sm text-zinc-900 border border-zinc-300 rounded-xl shadow-xs cursor-pointer bg-white focus:outline-none p-0.5 file:rounded-xl file:bg-gradient-to-b file:from-white file:to-zinc-100 file:p-1.5 file:border file:border-zinc-300 file:mr-2 file:cursor-pointer file:px-2 disabled:bg-zinc-200"
 			/>
 		</div>
 	}
